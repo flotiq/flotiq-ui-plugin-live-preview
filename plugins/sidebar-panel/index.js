@@ -50,6 +50,15 @@ export const handlePanelPlugin = (
 
   if (!pluginContainer) {
     pluginContainer = createPanelElement(cacheKey);
+
+    pluginContainer.addEventListener(
+      "flotiq.attached",
+      () => {
+        if (!pluginContainer.parentElement) return;
+        pluginContainer.parentElement.style.order = "-1";
+      },
+      true,
+    );
   }
 
   updatePanelElement(pluginContainer, contentObject.slug, formik.values);

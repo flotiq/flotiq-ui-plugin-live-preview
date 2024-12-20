@@ -2,7 +2,7 @@ let tabRef = null;
 
 // http://localhost:3000
 // https://mr-6-hndsmq-flotiq-nextjs-blog.dev.cdwv.pl
-const url = "https://mr-6-hndsmq-flotiq-nextjs-blog.dev.cdwv.pl";
+const url = "http://localhost:3000";
 
 let timeoutRef = null;
 
@@ -31,7 +31,7 @@ export const onBuildHandler = (values) => {
   // eslint-disable-next-line max-len
   const buildInstance = `${url}/api/flotiq/draft?key=3edb8c7de0fd9bda84767dec9cfdac62&draft=true&redirect=/${values.slug}`;
 
-  if (tabRef) {
+  if (tabRef && !tabRef?.closed) {
     updateTabData(values);
   } else {
     tabRef = window.open(
