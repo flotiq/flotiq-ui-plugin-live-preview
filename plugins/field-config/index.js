@@ -39,7 +39,7 @@ export const handleFormFieldConfig = (
       objectRoomId,
     );
 
-    const { doc: spaceDoc, ws: spaceWs } = getWebSocketConnection(
+    const { doc: spaceDoc } = getWebSocketConnection(
       settingsForCtd[0].api_key,
       contentType.name,
       spaceRoom,
@@ -51,7 +51,10 @@ export const handleFormFieldConfig = (
     config.onBlur = (...props) => {
       originBlur?.(...props);
       objectWs.awareness.setLocalStateField("activeField", undefined);
-      spaceWs.awareness.setLocalStateField("activeField", undefined);
+
+      const spaceValues = spaceDoc.getMap("vals");
+      spaceValues.set(increment);
+      increment++;
     };
 
     config.onChange = (...props) => {
@@ -86,7 +89,6 @@ export const handleFormFieldConfig = (
       }
 
       objectWs.awareness.setLocalStateField("activeField", name);
-      spaceWs.awareness.setLocalStateField("activeField", name);
     };
 
     config["data-live-preview-overriden-events"] = true;
