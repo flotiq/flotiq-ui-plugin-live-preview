@@ -14,7 +14,7 @@ i18n.init({
         EditorKey: "Client Authorisation Key",
         EditorKeyHelpText:
           "Key to view drafts and cache revalidation. It is defined in your application's environment variables",
-        Preview: "Preview",
+        Preview: "Live Preview",
         RouteTemplate: "Page route template",
         UrlTemplate: "URL template",
       },
@@ -30,7 +30,7 @@ i18n.init({
         EditorKeyHelpText:
           "Klucz umożliwiający podgląd draftów i rewalidacji cache. " +
           "Jest on zdefiniowany w zmiennych środowiskowych Twojej aplikacji",
-        Preview: "Podgląd",
+        Preview: "Podgląd na żywo",
         RouteTemplate: "Szablon ścieżki do strony",
         UrlTemplate: "Szablon adresu URL",
       },

@@ -15,26 +15,29 @@ const loadStyles = () => {
   }
 };
 
-registerFn(pluginInfo, (handler, _, { getPluginSettings, getLanguage }) => {
-  loadStyles();
+registerFn(
+  pluginInfo,
+  (handler, _, { getPluginSettings, getLanguage, getSpaceId }) => {
+    loadStyles();
 
-  const language = getLanguage();
-  if (language !== i18n.language) {
-    i18n.changeLanguage(language);
-  }
-
-  handler.on("flotiq.plugins.manage::form-schema", (data) =>
-    handleManagePlugin(data),
-  );
-  handler.on("flotiq.form.sidebar-panel::add", (data) =>
-    handlePanelPlugin(data, getPluginSettings),
-  );
-  handler.on("flotiq.form.field::config", (data) =>
-    handleFormFieldConfig(data, getPluginSettings),
-  );
-  handler.on("flotiq.language::changed", ({ language }) => {
+    const language = getLanguage();
     if (language !== i18n.language) {
       i18n.changeLanguage(language);
     }
-  });
-});
+
+    handler.on("flotiq.plugins.manage::form-schema", (data) =>
+      handleManagePlugin(data),
+    );
+    handler.on("flotiq.form.sidebar-panel::add", (data) =>
+      handlePanelPlugin(data, getPluginSettings, getSpaceId),
+    );
+    handler.on("flotiq.form.field::config", (data) =>
+      handleFormFieldConfig(data, getPluginSettings, getSpaceId),
+    );
+    handler.on("flotiq.language::changed", ({ language }) => {
+      if (language !== i18n.language) {
+        i18n.changeLanguage(language);
+      }
+    });
+  },
+);

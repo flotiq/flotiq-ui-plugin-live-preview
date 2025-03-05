@@ -14,10 +14,9 @@ const deepReadKeyValue = (key, object) => {
 };
 
 export class URLGenerator {
-  constructor(contentTypeName, objectId, config) {
+  constructor(config, spaceId) {
     this.config = config;
-    this.contentTypeName = contentTypeName;
-    this.objectId = objectId;
+    this.spaceId = spaceId;
   }
 
   getURL(object) {
@@ -36,8 +35,7 @@ export class URLGenerator {
 
     path += path.includes("?") ? "&" : "?";
     path += `apiKey=${this.config.api_key}`;
-    path += `&ctdName=${this.contentTypeName}`;
-    path += `&id=${this.objectId || "add"}`;
+    path += `&spaceId=${this.spaceId}`;
 
     baseURLInstance.searchParams.set("draft", "true");
     baseURLInstance.searchParams.set("redirect", `/${path.replace(/^\//, "")}`);

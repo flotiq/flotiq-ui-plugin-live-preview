@@ -6,9 +6,7 @@ const WEBSOCKET_ENDPOINT = "ws://localhost:1234";
 // Global websocket connection cache
 const connections = new Map();
 
-export function getWebSocketConnection(apiKey, ctdName, id) {
-  const roomId = `${ctdName}/${id || "add"}`;
-
+export function getWebSocketConnection(apiKey, ctdName, roomId) {
   if (!connections.has(roomId)) {
     const ydoc = new Y.Doc();
     const ws = new WebsocketProvider(WEBSOCKET_ENDPOINT, roomId, ydoc, {
@@ -19,7 +17,6 @@ export function getWebSocketConnection(apiKey, ctdName, id) {
     connections.set(roomId, { ws, doc: ydoc });
 
     ws.on("connection-close", () => {
-      ydoc.getMap("vals").clear();
       connections.delete(roomId);
     });
 
@@ -34,4 +31,14 @@ export function getWebSocketConnection(apiKey, ctdName, id) {
   }
 
   return connections.get(roomId);
+}
+
+export function clearConnections() {
+  if (connections.size > 0)
+    connections.forEach((value) => {
+      value.ws.disconnect();
+      value.ws.destroy();
+    });
+
+  connections.clear();
 }
