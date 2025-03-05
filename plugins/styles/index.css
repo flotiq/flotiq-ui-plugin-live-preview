@@ -1,0 +1,79 @@
+.plugin-live-preview {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Panel Header */
+.plugin-live-preview__header {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 1rem;
+}
+
+/* Panel Button */
+.plugin-live-preview__link,
+.plugin-live-preview__link:focus {
+  box-sizing: border-box;
+  display: flex;
+  cursor: pointer;
+  color: #0083fc;
+  font-weight: 500;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition-property: color, background-color, filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+  text-decoration: none;
+  line-height: 1;
+  border: 2px solid #0083fc;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.plugin-live-preview__link svg {
+  width: 14px;
+  height: auto;
+}
+
+.plugin-live-preview__link:hover {
+  color: white;
+  background-color: #0083fc;
+  text-decoration: none;
+}
+
+.plugin-live-preview__link:hover svg {
+  filter: contrast(0) brightness(100);
+}
+
+/* Theme: dark */
+.mode-dark .plugin-live-preview {
+  background: #020617;
+}
+
+.mode-dark .pplugin-live-preview__header,
+.mode-dark .plugin-live-preview__preview-link {
+  color: white;
+}
+
+.mode-dark .plugin-live-preview__link svg {
+  filter: contrast(0) brightness(100);
+}
+
+@media (max-width: 1536px) {
+  .plugin-preview-links__link,
+  .plugin-preview-links__link:focus {
+    font-size: 12px;
+    height: 32px;
+    width: 180px;
+  }
+
+  .plugin-live-preview__link svg {
+    width: 12px;
+  }
+}
