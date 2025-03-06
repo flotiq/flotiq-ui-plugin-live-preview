@@ -18,7 +18,7 @@ export const handleFormFieldConfig = (
   if (!formik || create) return;
 
   if (contentType?.id === pluginInfo.id && contentType?.nonCtdSchema) {
-    if (name === "editor_key") {
+    if (["editor_key", "api_key"].includes(name)) {
       config.type = "password";
       config.autoComplete = "off";
     }
