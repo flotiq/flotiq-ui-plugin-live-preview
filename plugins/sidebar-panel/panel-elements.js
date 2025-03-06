@@ -74,8 +74,8 @@ const updateLink = (htmlElement, config, contentObject, spaceId) => {
     event.preventDefault();
 
     if (tabRef && !tabRef?.closed) {
+      tabRef.location.replace(link);
       tabRef.focus();
-      console.log(tabRef);
     } else {
       tabRef = window.open(link, "_blank");
       window.tabRef = tabRef;

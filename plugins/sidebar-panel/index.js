@@ -8,11 +8,11 @@ import { clearConnections } from "../field-config/websockets";
 import { createPanelElement, updatePanelElement } from "./panel-elements";
 
 export const handlePanelPlugin = (
-  { contentType, contentObject, formik },
+  { contentType, contentObject, formik, create },
   getPluginSettings,
   getSpaceId,
 ) => {
-  if (!contentType?.name || !formik) return null;
+  if (!contentType?.name || !formik || create) return null;
 
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
   if (!settingsForCtd.length) return null;

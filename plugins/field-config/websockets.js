@@ -6,21 +6,38 @@ const WEBSOCKET_ENDPOINT = "ws://localhost:1234";
 // Global websocket connection cache
 const connections = new Map();
 
-export function getWebSocketConnection(apiKey, ctdName, roomId) {
+export function getWebSocketConnection(apiKey, roomId) {
   if (!connections.has(roomId)) {
     const ydoc = new Y.Doc();
     const ws = new WebsocketProvider(WEBSOCKET_ENDPOINT, roomId, ydoc, {
-      params: { apiKey, ctdName },
+      params: { apiKey },
       connect: true,
     });
 
     connections.set(roomId, { ws, doc: ydoc });
 
+    const userData = JSON.parse(window.localStorage["cms.user"]).data;
+
     ws.on("connection-close", () => {
+      const users = Array.from(ws.awareness.getStates().values()) || [];
+      const flotiqEditors = users.filter(
+        (user) => user?.userId && user.userId !== userData.id,
+      );
+
+      if (!flotiqEditors.length) {
+        ydoc.getMap("vals").clear();
+        ydoc.destroy();
+      }
+
+      ws.awareness.destroy();
       connections.delete(roomId);
     });
 
-    const userData = JSON.parse(window.localStorage["cms.user"]).data;
+    ws.on("status", (isOpened) => {
+      if (!isOpened) return;
+      const update = Y.encodeStateAsUpdate(ydoc);
+      Y.applyUpdate(ydoc, update);
+    });
 
     // Ustawiamy awareness dla użytkownika
     ws.awareness.setLocalState({

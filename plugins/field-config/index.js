@@ -4,14 +4,18 @@ import { getWebSocketConnection } from "./websockets";
 
 const DEBOUNCE_TIMEOUT = 300;
 
-let increment = 0;
+const incrementSpaceWs = (ydoc) => {
+  const vals = ydoc.getMap("vals");
+  const number = vals.get("num") || 0;
+  vals.set("num", number + 1);
+};
 
 export const handleFormFieldConfig = (
-  { config, contentType, name, initialData, formik },
+  { config, contentType, name, initialData, formik, create },
   getPluginSettings,
   getSpaceId,
 ) => {
-  if (!formik) return;
+  if (!formik || create) return;
 
   if (contentType?.id === pluginInfo.id && contentType?.nonCtdSchema) {
     if (name === "editor_key") {
@@ -26,22 +30,22 @@ export const handleFormFieldConfig = (
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
   if (!settingsForCtd.length) return;
 
+  const spaceId = getSpaceId();
+  if (!spaceId) return;
+
   let debounceTimeout;
 
   if (!config["data-live-preview-overriden-events"]) {
-    const spaceId = getSpaceId();
     const objectRoomId = `${spaceId}/${contentType.name}/${initialData?.id || "add"}`;
     const spaceRoom = spaceId;
 
     const { doc: objectDoc, ws: objectWs } = getWebSocketConnection(
       settingsForCtd[0].api_key,
-      contentType.name,
       objectRoomId,
     );
 
     const { doc: spaceDoc } = getWebSocketConnection(
       settingsForCtd[0].api_key,
-      contentType.name,
       spaceRoom,
     );
 
@@ -51,10 +55,7 @@ export const handleFormFieldConfig = (
     config.onBlur = (...props) => {
       originBlur?.(...props);
       objectWs.awareness.setLocalStateField("activeField", undefined);
-
-      const spaceValues = spaceDoc.getMap("vals");
-      spaceValues.set(increment);
-      increment++;
+      incrementSpaceWs(spaceDoc);
     };
 
     config.onChange = (...props) => {
@@ -67,7 +68,6 @@ export const handleFormFieldConfig = (
           : props[1];
 
       debounceTimeout = setTimeout(() => {
-        const spaceValues = spaceDoc.getMap("vals");
         const objectValues = objectDoc.getMap("vals");
 
         const arg1 = props[0];
@@ -78,8 +78,7 @@ export const handleFormFieldConfig = (
           objectValues.set(props[1], arg1);
         }
 
-        spaceValues.set(increment);
-        increment++;
+        incrementSpaceWs(spaceDoc);
       }, DEBOUNCE_TIMEOUT);
 
       if (originChange) {
