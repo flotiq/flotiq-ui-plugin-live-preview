@@ -2,13 +2,15 @@ import { getCtdSettings } from "../../common/settings-parser";
 import pluginInfo from "../../plugin-manifest.json";
 import { getWebSocketConnection } from "./websockets";
 
-const DEBOUNCE_TIMEOUT = 300;
+const DEBOUNCE_TIMEOUT = 500;
 
 const incrementSpaceWs = (ydoc) => {
   const vals = ydoc.getMap("vals");
   const number = vals.get("num") || 0;
   vals.set("num", number + 1);
 };
+
+let debounceTimeout;
 
 export const handleFormFieldConfig = (
   { config, contentType, name, initialData, formik, create },
@@ -33,8 +35,6 @@ export const handleFormFieldConfig = (
 
   const spaceId = getSpaceId();
   if (!spaceId) return;
-
-  let debounceTimeout;
 
   if (!config["data-live-preview-overriden-events"]) {
     const objectRoomId = `${spaceId}/${contentType.name}/${initialData?.id || "add"}`;
