@@ -53,7 +53,7 @@ export const updatePanelElement = (
 };
 
 const createLink = () => {
-  const linkItem = document.createElement("link");
+  const linkItem = document.createElement("a");
   linkItem.classList.add("plugin-live-preview__link");
 
   linkItem.innerHTML = /*html*/ `
