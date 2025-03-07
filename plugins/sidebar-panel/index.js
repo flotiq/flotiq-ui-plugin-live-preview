@@ -29,12 +29,8 @@ export const handlePanelPlugin = (
 
   const spaceId = getSpaceId();
 
-  updatePanelElement(
-    pluginContainer,
-    settingsForCtd,
-    formik.values || contentObject,
-    spaceId,
-  );
+  const objectData = { ...contentObject, ...formik.values };
+  updatePanelElement(pluginContainer, settingsForCtd, objectData, spaceId);
 
   return pluginContainer;
 };
