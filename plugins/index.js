@@ -2,6 +2,7 @@ import { registerFn } from "../common/plugin-element-cache";
 import i18n from "../i18n";
 import pluginInfo from "../plugin-manifest.json";
 import { handleFormFieldConfig } from "./field-config";
+import { clearConnections } from "./field-config/websockets";
 import { handleManagePlugin } from "./manage-form";
 import { handlePanelPlugin } from "./sidebar-panel";
 import cssString from "inline:./styles/index.css";
@@ -24,6 +25,10 @@ registerFn(
     if (language !== i18n.language) {
       i18n.changeLanguage(language);
     }
+
+    window.addEventListener("beforeunload", () => {
+      clearConnections();
+    });
 
     handler.on("flotiq.plugins.manage::form-schema", (data) =>
       handleManagePlugin(data),
