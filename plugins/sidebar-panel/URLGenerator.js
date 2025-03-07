@@ -24,18 +24,16 @@ export class URLGenerator {
       `${this.config.base_url.replace(/\/+$/, "")}/api/flotiq/draft`,
     );
     baseURLInstance.searchParams.set("key", this.config.editor_key);
+    baseURLInstance.searchParams.set("apiKey", this.config.api_key);
+    baseURLInstance.searchParams.set("spaceId", this.spaceId);
 
-    let path = this.config.route_template.replace(
+    const path = this.config.route_template.replace(
       /{(?<key>[^{}]+)}/g,
       (...params) => {
         const { key } = params[4];
         return deepReadKeyValue(key, object);
       },
     );
-
-    path += path.includes("?") ? "&" : "?";
-    path += `apiKey=${this.config.api_key}`;
-    path += `&spaceId=${this.spaceId}`;
 
     baseURLInstance.searchParams.set("draft", "true");
     baseURLInstance.searchParams.set("redirect", `/${path.replace(/^\//, "")}`);
