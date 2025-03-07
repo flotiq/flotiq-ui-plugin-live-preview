@@ -1,15 +1,19 @@
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
+import { getUserColor } from "./user-colors";
 
-const WEBSOCKET_ENDPOINT = "ws://localhost:1234";
-
-// Global websocket connection cache
 const connections = new Map();
 
-export function getWebSocketConnection(apiKey, roomId) {
+export function getWebSocketConnection(apiKey, roomId, apiUrl) {
   if (!connections.has(roomId)) {
     const ydoc = new Y.Doc();
-    const ws = new WebsocketProvider(WEBSOCKET_ENDPOINT, roomId, ydoc, {
+
+    const websocketEnpoint =
+      apiUrl !== "https://api.flotiq.com"
+        ? "wss://flotiq-websockets-staging.dev.cdwv.pl"
+        : "wss://sockets.flotiq.com";
+
+    const ws = new WebsocketProvider(websocketEnpoint, roomId, ydoc, {
       params: { apiKey },
       connect: true,
     });
@@ -30,7 +34,6 @@ export function getWebSocketConnection(apiKey, roomId) {
       }
 
       ws.awareness.destroy();
-      connections.delete(roomId);
     });
 
     ws.on("status", (isOpened) => {
@@ -39,11 +42,12 @@ export function getWebSocketConnection(apiKey, roomId) {
       Y.applyUpdate(ydoc, update);
     });
 
-    // Ustawiamy awareness dla użytkownika
+    // Set user information for the connection
     ws.awareness.setLocalState({
-      userId: userData.id, // Przekazujemy ID użytkownika
-      name: userData.firstName + " " + userData.lastName, // Możesz dodać inne dane, np. nazwę
-      color: `#${Math.floor(Math.random() * 16777215).toString(16)}`, // Randomowy kolor
+      userId: userData.id,
+      name: userData.firstName + " " + userData.lastName,
+      color: getUserColor(userData.id),
+      lightColor: getUserColor(userData.id, true),
     });
   }
 

@@ -14,6 +14,7 @@ export const handleFormFieldConfig = (
   { config, contentType, name, initialData, formik, create },
   getPluginSettings,
   getSpaceId,
+  getApiUrl,
 ) => {
   if (!formik || create) return;
 
@@ -39,14 +40,18 @@ export const handleFormFieldConfig = (
     const objectRoomId = `${spaceId}/${contentType.name}/${initialData?.id || "add"}`;
     const spaceRoom = spaceId;
 
+    const apiUrl = getApiUrl();
+
     const { doc: objectDoc, ws: objectWs } = getWebSocketConnection(
       settingsForCtd[0].api_key,
       objectRoomId,
+      apiUrl,
     );
 
     const { doc: spaceDoc } = getWebSocketConnection(
       settingsForCtd[0].api_key,
       spaceRoom,
+      apiUrl,
     );
 
     const originChange = config.onChange;

@@ -17,7 +17,7 @@ const loadStyles = () => {
 
 registerFn(
   pluginInfo,
-  (handler, _, { getPluginSettings, getLanguage, getSpaceId }) => {
+  (handler, _, { getPluginSettings, getLanguage, getSpaceId, getApiUrl }) => {
     loadStyles();
 
     const language = getLanguage();
@@ -32,7 +32,7 @@ registerFn(
       handlePanelPlugin(data, getPluginSettings, getSpaceId),
     );
     handler.on("flotiq.form.field::config", (data) =>
-      handleFormFieldConfig(data, getPluginSettings, getSpaceId),
+      handleFormFieldConfig(data, getPluginSettings, getSpaceId, getApiUrl),
     );
     handler.on("flotiq.language::changed", ({ language }) => {
       if (language !== i18n.language) {

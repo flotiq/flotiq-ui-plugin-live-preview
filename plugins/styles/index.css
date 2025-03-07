@@ -78,7 +78,6 @@
   .plugin-live-preview__link:focus {
     font-size: 12px;
     height: 32px;
-    width: 180px;
   }
 
   .plugin-live-preview__link svg {
