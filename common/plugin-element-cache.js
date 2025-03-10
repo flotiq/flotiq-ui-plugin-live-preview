@@ -1,6 +1,6 @@
 const appRoots = {};
 
-export const addElementToCache = (element, key, data = {}) => {
+export const addElementToCache = (element, key, data = {}, onRemove = null) => {
   appRoots[key] = {
     element,
     data,
@@ -18,6 +18,7 @@ export const addElementToCache = (element, key, data = {}) => {
   element.addEventListener("flotiq.detached", () => {
     detachTimeoutId = setTimeout(() => {
       delete appRoots[key];
+      onRemove?.();
     }, 50);
   });
 };
