@@ -42,6 +42,14 @@ Specify the types of content for which you want the plugin to generate links.
 
 Define the URL template for your content pages. For example, you might use /post/{slug}, where {slug} corresponds to a specific field in your content type, such as the post's title or ID. You can also use nested fields, like {internal.createdAt}, or list fields, such as {addresses[0].city}. This flexibility allows you to customize how your content URLs are structured.
 
+### Next.js integration
+
+You can integrate live preview functionality into any project by responding to events sent by the Live Preview plugin during content editing.
+We've prepared a Next.js integration that allows you to add live preview support to your project in just a few steps.
+
+Documentation and setup instructions for integrating it into your Next.js project can be found in the [@floiq/nextjs-live-preview](https://www.npmjs.com/package/@flotiq/nextjs-live-preview) package.
+
+
 ## Development
 
 ### Quick start
