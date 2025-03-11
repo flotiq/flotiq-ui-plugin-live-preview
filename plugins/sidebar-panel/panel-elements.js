@@ -41,7 +41,7 @@ export const updatePanelElement = (
   settingsForCtd,
   data,
   spaceId,
-  create,
+  disabled,
 ) => {
   const buttonList = pluginContainer.querySelector(
     ".plugin-live-preview__button-list",
@@ -53,7 +53,7 @@ export const updatePanelElement = (
       htmlItem = createLink();
       buttonList.appendChild(htmlItem);
     }
-    updateLink(htmlItem, buttonSettings, data, spaceId, create);
+    updateLink(htmlItem, buttonSettings, data, spaceId, disabled);
     return htmlItem;
   });
 
