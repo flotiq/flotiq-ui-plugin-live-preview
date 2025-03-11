@@ -59,6 +59,21 @@
   filter: contrast(0) brightness(100);
 }
 
+.plugin-live-preview__link--disabled,
+.plugin-live--preview__link--disabled:hover,
+.plugin-live--preview__link--disabled:active,
+.plugin-live--preview__link--disabled:focus {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: #0083fc;
+}
+
+.plugin-live-preview__disabled {
+  margin-top: 6px;
+  opacity: 0.9;
+  font-size: 12px;
+}
+
 /* Theme: dark */
 .mode-dark .plugin-live-preview {
   background: #020617;

@@ -5,7 +5,6 @@ export const getSchema = (contentTypes) => ({
   id: pluginInfo.id,
   name: "live_preview_link",
   label: "Live preview links",
-  workflowId: "generic",
   internal: false,
   schemaDefinition: {
     type: "object",

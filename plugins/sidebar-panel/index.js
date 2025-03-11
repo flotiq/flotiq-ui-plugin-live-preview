@@ -12,15 +12,14 @@ export const handlePanelPlugin = (
   getPluginSettings,
   getSpaceId,
 ) => {
-  if (!contentType?.name || !formik || create) return null;
-
+  if (!contentType?.name || !formik) return null;
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
   if (!settingsForCtd.length) return null;
 
   const cacheKey = `${pluginInfo.id}-${contentType.name}-${contentObject?.id || "new"}`;
   let pluginContainer = getCachedElement(cacheKey)?.element;
   if (!pluginContainer) {
-    pluginContainer = createPanelElement();
+    pluginContainer = createPanelElement(create);
 
     addElementToCache(pluginContainer, cacheKey, {}, () => {
       clearConnections();
@@ -30,7 +29,7 @@ export const handlePanelPlugin = (
   const spaceId = getSpaceId();
 
   const objectData = { ...contentObject, ...formik.values };
-  updatePanelElement(pluginContainer, settingsForCtd, objectData, spaceId);
+  updatePanelElement(pluginContainer, settingsForCtd, objectData, spaceId, create);
 
   return pluginContainer;
 };

@@ -4,15 +4,25 @@ import i18n from "../../i18n";
 
 let tabRef = null;
 
-export const createPanelElement = () => {
+export const createPanelElement = (disabled) => {
   const panelElement = document.createElement("div");
   panelElement.classList.add("plugin-live-preview");
-  panelElement.innerHTML = /*html*/ `
+
+  let container = /*html*/ `
       <span class="plugin-live-preview__header">
         Preview
       </span>
       <div class="plugin-live-preview__button-list"></div>
-    `;
+  `;
+
+  if(disabled) {
+    container += /* html */  `
+        <span class="plugin-live-preview__disabled">
+            ${ i18n.t("SaveToPreview") }
+        </span>`
+  }
+
+  panelElement.innerHTML = container;
 
   panelElement.addEventListener(
     "flotiq.attached",
@@ -31,6 +41,7 @@ export const updatePanelElement = (
   settingsForCtd,
   data,
   spaceId,
+  create,
 ) => {
   const buttonList = pluginContainer.querySelector(
     ".plugin-live-preview__button-list",
@@ -42,7 +53,7 @@ export const updatePanelElement = (
       htmlItem = createLink();
       buttonList.appendChild(htmlItem);
     }
-    updateLink(htmlItem, buttonSettings, data, spaceId);
+    updateLink(htmlItem, buttonSettings, data, spaceId, create);
     return htmlItem;
   });
 
@@ -63,12 +74,21 @@ const createLink = () => {
   return linkItem;
 };
 
-const updateLink = (htmlElement, config, contentObject, spaceId) => {
+const updateLink = (htmlElement, config, contentObject, spaceId, disabled) => {
   const urlGenerator = new URLGenerator(config, spaceId);
   const link = urlGenerator.getURL(contentObject);
 
-  htmlElement.href = link;
   htmlElement.querySelector("span").textContent = i18n.t("Preview");
+
+  if (disabled) {
+    htmlElement.classList.add("plugin-live-preview__link--disabled");
+    htmlElement.onclick = (event) => {
+      event.preventDefault();
+    }
+    return;
+  }
+
+  htmlElement.href = link;
 
   htmlElement.onclick = (event) => {
     event.preventDefault();

@@ -23,7 +23,7 @@ export const handleFormFieldConfig = (
   if (contentType?.id === pluginInfo.id && contentType?.nonCtdSchema) {
     if (["editor_key", "api_key"].includes(name)) {
       config.type = "password";
-      config.autoComplete = "off";
+      config.autocomplete = "new-password";
     }
     return;
   }
