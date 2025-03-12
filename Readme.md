@@ -51,7 +51,7 @@ We've prepared a Next.js integration that allows you to add live preview support
 
 Documentation and setup instructions for integrating it into your Next.js project can be found in the [@floiq/nextjs-live-preview](https://www.npmjs.com/package/@flotiq/nextjs-live-preview) package.
 
-[Live preview components](./.docs/live-preview-components.png)
+![Live preview components](./.docs/live-preview-components.png)
 
 ## Development
 
