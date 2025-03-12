@@ -8,6 +8,8 @@ The Live Preview Plugin is used for real-time transmission of data from content 
 The plugin generates links that let you open drafts of your pages directly from the editor with a live streaming preview.
 It works best with Next.js-based sites that use draft mode.
 
+![Live preview demo](./.docs/live-preview-ui.png)
+
 ## Usage
 
 While editing your objects, you will now have access to new action on the right hand-side. Live preview - opens a preview of the latest content on your form
@@ -49,6 +51,7 @@ We've prepared a Next.js integration that allows you to add live preview support
 
 Documentation and setup instructions for integrating it into your Next.js project can be found in the [@floiq/nextjs-live-preview](https://www.npmjs.com/package/@flotiq/nextjs-live-preview) package.
 
+![Live preview components](./.docs/live-preview-components.png)
 
 ## Development
 
