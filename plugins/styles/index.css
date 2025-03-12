@@ -72,6 +72,11 @@
   margin-top: 6px;
   opacity: 0.9;
   font-size: 12px;
+  color: black;
+}
+
+.mode-dark .plugin-live-preview__disabled {
+  color: white;
 }
 
 /* Theme: dark */
