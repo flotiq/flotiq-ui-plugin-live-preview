@@ -1,8 +1,9 @@
 import { getCtdSettings } from "../../common/settings-parser";
 import pluginInfo from "../../plugin-manifest.json";
 import { getWebSocketConnection } from "./websockets";
+import throttle from "lodash/throttle";
 
-const DEBOUNCE_TIMEOUT = 500;
+const THROTTLE_TIMEOUT = 300;
 
 const incrementSpaceWs = (ydoc) => {
   const vals = ydoc.getMap("vals");
@@ -10,7 +11,16 @@ const incrementSpaceWs = (ydoc) => {
   vals.set("num", number + 1);
 };
 
-let debounceTimeout;
+const throttledUpdate = throttle((props, objectDoc, spaceDoc) => {
+  const objectValues = objectDoc.getMap("vals");
+  const arg1 = props[0];
+  if (arg1 instanceof Object && arg1.nativeEvent) {
+    objectValues.set(arg1.target.name, arg1.target.value);
+  } else {
+    objectValues.set(props[1], arg1);
+  }
+  incrementSpaceWs(spaceDoc);
+}, THROTTLE_TIMEOUT);
 
 export const handleFormFieldConfig = (
   { config, contentType, name, initialData, formik, create },
@@ -64,27 +74,13 @@ export const handleFormFieldConfig = (
     };
 
     config.onChange = (...props) => {
-      clearTimeout(debounceTimeout);
-
       const arg1 = props[0];
       const name =
         arg1 instanceof Object && arg1.nativeEvent
           ? arg1.target.name
           : props[1];
 
-      debounceTimeout = setTimeout(() => {
-        const objectValues = objectDoc.getMap("vals");
-
-        const arg1 = props[0];
-
-        if (arg1 instanceof Object && arg1.nativeEvent) {
-          objectValues.set(arg1.target.name, arg1.target.value);
-        } else {
-          objectValues.set(props[1], arg1);
-        }
-
-        incrementSpaceWs(spaceDoc);
-      }, DEBOUNCE_TIMEOUT);
+      throttledUpdate(props, objectDoc, spaceDoc);
 
       if (originChange) {
         originChange(...props);
