@@ -14,7 +14,7 @@ const incrementSpaceWs = (ydoc) => {
 const throttledUpdate = throttle((props, objectDoc, spaceDoc) => {
   const objectValues = objectDoc.getMap("vals");
   const arg1 = props[0];
-  if (arg1 instanceof Object && arg1.nativeEvent) {
+  if (arg1 instanceof Object && typeof arg1.target?.name === "string") {
     objectValues.set(arg1.target.name, arg1.target.value);
   } else {
     objectValues.set(props[1], arg1);
@@ -58,7 +58,7 @@ export const handleFormFieldConfig = (
       apiUrl,
     );
 
-    const { doc: spaceDoc } = getWebSocketConnection(
+    const { doc: spaceDoc, ws: spaceWs } = getWebSocketConnection(
       settingsForCtd[0].api_key,
       spaceRoom,
       apiUrl,
@@ -70,16 +70,10 @@ export const handleFormFieldConfig = (
     config.onBlur = (...props) => {
       originBlur?.(...props);
       objectWs.awareness.setLocalStateField("activeField", undefined);
-      incrementSpaceWs(spaceDoc);
+      spaceWs.awareness.setLocalStateField("activeField", undefined);
     };
 
     config.onChange = (...props) => {
-      const arg1 = props[0];
-      const name =
-        arg1 instanceof Object && arg1.nativeEvent
-          ? arg1.target.name
-          : props[1];
-
       throttledUpdate(props, objectDoc, spaceDoc);
 
       if (originChange) {
@@ -87,8 +81,17 @@ export const handleFormFieldConfig = (
       } else {
         formik.handleChange(...props);
       }
+    };
 
+    config.onFocus = (...props) => {
+      const arg1 = props[0];
+      const name =
+        arg1 instanceof Object && typeof arg1.target?.name === "string"
+          ? arg1.target.name
+          : arg1;
+          
       objectWs.awareness.setLocalStateField("activeField", name);
+      spaceWs.awareness.setLocalStateField("activeField", name);
     };
 
     config["data-live-preview-overriden-events"] = true;
