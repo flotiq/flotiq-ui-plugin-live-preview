@@ -26,6 +26,11 @@ export class URLGenerator {
     baseURLInstance.searchParams.set("key", this.config.editor_key);
     baseURLInstance.searchParams.set("apiKey", this.config.api_key);
     baseURLInstance.searchParams.set("spaceId", this.spaceId);
+    baseURLInstance.searchParams.set("objectId", object.id);
+    baseURLInstance.searchParams.set(
+      "contentType",
+      object.internal.contentType,
+    );
 
     const path = this.config.route_template.replace(
       /{(?<key>[^{}]+)}/g,
