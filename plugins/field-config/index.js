@@ -63,7 +63,7 @@ export const handleFormFieldConfig = (
   if (!contentType?.name || !formik) return null;
 
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
-  if (!settingsForCtd.length) return;
+  if (!settingsForCtd?.length) return;
 
   const spaceId = getSpaceId();
   if (!spaceId) return;

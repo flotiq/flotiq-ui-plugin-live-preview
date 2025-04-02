@@ -14,7 +14,7 @@ export const handlePanelPlugin = (
 ) => {
   if (!contentType?.name || !formik) return null;
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
-  if (!settingsForCtd.length) return null;
+  if (!settingsForCtd?.length) return null;
 
   const cacheKey = `${pluginInfo.id}-${contentType.name}-${contentObject?.id || "new"}`;
   let pluginContainer = getCachedElement(cacheKey)?.element;
@@ -29,7 +29,13 @@ export const handlePanelPlugin = (
   const spaceId = getSpaceId();
 
   const objectData = { ...contentObject, ...formik.values };
-  updatePanelElement(pluginContainer, settingsForCtd, objectData, spaceId, create);
+  updatePanelElement(
+    pluginContainer,
+    settingsForCtd,
+    objectData,
+    spaceId,
+    create,
+  );
 
   return pluginContainer;
 };
