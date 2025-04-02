@@ -6,7 +6,7 @@
 
 The Live Preview Plugin is used for real-time transmission of data from content object forms, allowing the end application to display content changes live.
 The plugin generates links that let you open drafts of your pages directly from the editor with a live streaming preview.
-It works best with Next.js-based sites that use draft mode.
+It works best with Next.js-based sites.
 
 ![Live preview demo](./.docs/live-preview-ui.png)
 
