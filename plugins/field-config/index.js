@@ -1,12 +1,9 @@
-import throttle from "lodash/throttle";
 import * as Y from "yjs";
 import diff from "fast-diff";
 
 import pluginInfo from "../../plugin-manifest.json";
 import { getCtdSettings } from "../../common/settings-parser";
 import { getWebSocketConnection } from "./websockets";
-
-const THROTTLE_TIMEOUT = 300;
 
 /** Convert a fast-diff result to a YJS delta. */
 const diffToDelta = (diffResult) => {
@@ -22,7 +19,7 @@ const diffToDelta = (diffResult) => {
     .filter(Boolean);
 };
 
-const throttledUpdate = throttle((props, schema, objectDoc) => {
+const update = (props, schema, objectDoc) => {
   const objectValues = objectDoc.getMap("vals");
   const arg1 = props[0];
 
@@ -42,7 +39,7 @@ const throttledUpdate = throttle((props, schema, objectDoc) => {
   } else {
     objectValues.set(fieldName, newValue);
   }
-}, THROTTLE_TIMEOUT);
+};
 
 export const handleFormFieldConfig = (
   { config, contentType, name, initialData, formik, create, schema },
@@ -87,7 +84,7 @@ export const handleFormFieldConfig = (
     };
 
     config.onChange = (...props) => {
-      throttledUpdate(props, schema, objectDoc);
+      update(props, schema, objectDoc);
 
       if (originChange) {
         originChange(...props);
