@@ -2,10 +2,11 @@ import { registerFn } from "../common/plugin-element-cache";
 import i18n from "../i18n";
 import pluginInfo from "../plugin-manifest.json";
 import { handleFormFieldConfig } from "./field-config";
-import { clearConnections } from "./field-config/websockets";
+import { clearConnections } from "../common/websockets";
 import { handleManagePlugin } from "./manage-form";
 import { handlePanelPlugin } from "./sidebar-panel";
 import cssString from "inline:./styles/index.css";
+import { handleAddTranslation } from "./mulitlingual-translations";
 
 const loadStyles = () => {
   if (!document.getElementById(`${pluginInfo.id}-styles`)) {
@@ -43,6 +44,10 @@ registerFn(
       if (language !== i18n.language) {
         i18n.changeLanguage(language);
       }
+    });
+
+    handler.on("flotiq-multilingual.translation::added", (data) => {
+      handleAddTranslation(data, getPluginSettings, getSpaceId, getApiUrl);
     });
   },
 );
