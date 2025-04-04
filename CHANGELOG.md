@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * translation field on translations add #26528
 
+## [0.2.1]
+### Changed
+* remove throttle on field change #26528
+
 ## [0.2.0]
 ### Changed
 * URL to live preview #26528

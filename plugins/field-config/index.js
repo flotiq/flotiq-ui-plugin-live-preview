@@ -1,26 +1,20 @@
-import throttle from "lodash/throttle";
 import pluginInfo from "../../plugin-manifest.json";
 import { getObjectWSConnection } from "../../common/websockets";
 import { deepAssignToDoc, updateObjectDoc } from "../../common/yjs";
 
-const THROTTLE_TIMEOUT = 300;
+export const updateDoc = (props, schema, objectDoc, formikValues) => {
+  const arg1 = props[0];
+  const { fieldName, newValue } =
+    arg1 instanceof Object && typeof arg1.target?.name === "string"
+      ? { fieldName: arg1.target.name, newValue: arg1.target.value }
+      : { fieldName: props[1], newValue: arg1 };
 
-export const throttledUpdate = throttle(
-  (props, schema, objectDoc, formikValues) => {
-    const arg1 = props[0];
-    const { fieldName, newValue } =
-      arg1 instanceof Object && typeof arg1.target?.name === "string"
-        ? { fieldName: arg1.target.name, newValue: arg1.target.value }
-        : { fieldName: props[1], newValue: arg1 };
-
-    if (objectDoc.getMap("vals").size) {
-      updateObjectDoc(fieldName, newValue, schema, objectDoc);
-    } else {
-      deepAssignToDoc(formikValues, objectDoc.getMap("vals"), schema);
-    }
-  },
-  THROTTLE_TIMEOUT,
-);
+  if (objectDoc.getMap("vals").size) {
+    updateObjectDoc(fieldName, newValue, schema, objectDoc);
+  } else {
+    deepAssignToDoc(formikValues, objectDoc.getMap("vals"), schema);
+  }
+};
 
 export const handleFormFieldConfig = (
   { config, contentType, name, initialData, formik, create },
@@ -61,7 +55,7 @@ export const handleFormFieldConfig = (
     };
 
     config.onChange = (...props) => {
-      throttledUpdate(props, schema, wsConnection.doc, formik.values);
+      updateDoc(props, schema, wsConnection.doc, formik.values);
 
       if (originChange) {
         originChange(...props);
