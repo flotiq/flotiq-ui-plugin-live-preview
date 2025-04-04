@@ -1,10 +1,11 @@
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-import { getUserColor } from "./user-colors";
+import { getUserColor } from "../plugins/field-config/user-colors";
+import { getCtdSettings } from "./settings-parser";
 
 const connections = new Map();
 
-export function getWebSocketConnection(apiKey, roomId, apiUrl) {
+function getWebSocketConnection(apiKey, roomId, apiUrl) {
   if (!connections.has(roomId)) {
     const ydoc = new Y.Doc();
 
@@ -63,3 +64,24 @@ export function clearConnections() {
 
   connections.clear();
 }
+
+export const getObjectWSConnection = (
+  pluginSettings,
+  contentType,
+  initialData,
+  spaceId,
+  apiUrl,
+) => {
+  if (!spaceId || !apiUrl || !pluginSettings || !contentType?.name) return;
+
+  const settingsForCtd = getCtdSettings(pluginSettings, contentType.name);
+  if (!settingsForCtd.length) return;
+
+  const objectRoomId = `${spaceId}/${contentType.name}/${initialData?.id || "add"}`;
+
+  return getWebSocketConnection(
+    settingsForCtd[0].api_key,
+    objectRoomId,
+    apiUrl,
+  );
+};

@@ -4,7 +4,7 @@ import {
 } from "../../common/plugin-element-cache";
 import { getCtdSettings } from "../../common/settings-parser";
 import pluginInfo from "../../plugin-manifest.json";
-import { clearConnections } from "../field-config/websockets";
+import { clearConnections } from "../../common/websockets";
 import { createPanelElement, updatePanelElement } from "./panel-elements";
 
 export const handlePanelPlugin = (

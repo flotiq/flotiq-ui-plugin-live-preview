@@ -1,17 +1,4 @@
-/**
- * Read key value deep inside object
- * @param {string} key
- * @param {object} object
- * @returns {*} example: read 'object[0].key' from 'object: [{key: value}]
- */
-const deepReadKeyValue = (key, object) => {
-  return key
-    .split(/[[.\]]/)
-    .filter((kp) => !!kp)
-    .reduce((nestedOptions, keyPart) => {
-      return nestedOptions?.[keyPart];
-    }, object);
-};
+import { deepReadKeyValue } from "../../common/lib";
 
 export class URLGenerator {
   constructor(config, spaceId) {
@@ -29,7 +16,7 @@ export class URLGenerator {
     baseURLInstance.searchParams.set("objectId", object.id);
     baseURLInstance.searchParams.set(
       "contentType",
-      object.internal.contentType,
+      object.internal?.contentType,
     );
 
     const path = this.config.route_template.replace(
