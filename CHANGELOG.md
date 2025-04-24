@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [0.4.0]
+### Fixed
+* when multilingual is adding new tranlsation, plugin will store whole translation field instead of just language #26441
+
+### Changed
+* plugin will listen to `flotiq-multilingual.translation::changed` event (in previous multilingual plugin version it was `flotiq-multilingual.translation::added`) #26441
+
 ## [0.3.0]
 ### Fixed
 * storing nested objects in yjs doc #26528

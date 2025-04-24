@@ -1,8 +1,8 @@
 import { getObjectWSConnection } from "../../common/websockets";
 import { updateObjectDoc } from "../../common/yjs";
 
-export const handleAddTranslation = (
-  { fieldName, language, initialData, contentType },
+export const handleChangeTranslation = (
+  { fieldName, initialData, contentType, newTranslation },
   getPluginSettings,
   getSpaceId,
   getApiUrl,
@@ -18,8 +18,8 @@ export const handleAddTranslation = (
   if (!wsConnection) return;
 
   updateObjectDoc(
-    `${fieldName}.__language`,
-    language,
+    fieldName,
+    newTranslation,
     contentType?.schemaDefinition?.allOf?.[1]?.properties,
     wsConnection.doc,
   );
