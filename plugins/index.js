@@ -6,7 +6,7 @@ import { clearConnections } from "../common/websockets";
 import { handleManagePlugin } from "./manage-form";
 import { handlePanelPlugin } from "./sidebar-panel";
 import cssString from "inline:./styles/index.css";
-import { handleAddTranslation } from "./mulitlingual-translations";
+import { handleChangeTranslation } from "./mulitlingual-translations";
 
 const loadStyles = () => {
   if (!document.getElementById(`${pluginInfo.id}-styles`)) {
@@ -46,8 +46,8 @@ registerFn(
       }
     });
 
-    handler.on("flotiq-multilingual.translation::added", (data) => {
-      handleAddTranslation(data, getPluginSettings, getSpaceId, getApiUrl);
+    handler.on("flotiq-multilingual.translation::changed", (data) => {
+      handleChangeTranslation(data, getPluginSettings, getSpaceId, getApiUrl);
     });
   },
 );
