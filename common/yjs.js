@@ -68,7 +68,9 @@ export const deepAssignToDoc = (
           yType,
           isArrayIndex
             ? fieldSchema
-            : fieldSchema.items?.properties || fieldSchema.properties,
+            : fieldSchema.items?.properties ||
+                fieldSchema.properties ||
+                fieldSchema.items,
           fieldSchema.type === "array" && !isArrayIndex,
         );
       }

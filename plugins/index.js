@@ -7,6 +7,7 @@ import { handleManagePlugin } from "./manage-form";
 import { handlePanelPlugin } from "./sidebar-panel";
 import cssString from "inline:./styles/index.css";
 import { handleChangeTranslation } from "./mulitlingual-translations";
+import { handleFormFieldListenrsAdd } from "./field-listeners";
 
 const loadStyles = () => {
   if (!document.getElementById(`${pluginInfo.id}-styles`)) {
@@ -39,6 +40,14 @@ registerFn(
     );
     handler.on("flotiq.form.field::config", (data) =>
       handleFormFieldConfig(data, getPluginSettings, getSpaceId, getApiUrl),
+    );
+    handler.on("flotiq.form.field.listeners::add", (data) =>
+      handleFormFieldListenrsAdd(
+        data,
+        getPluginSettings,
+        getSpaceId,
+        getApiUrl,
+      ),
     );
     handler.on("flotiq.language::changed", ({ language }) => {
       if (language !== i18n.language) {
