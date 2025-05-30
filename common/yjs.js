@@ -16,75 +16,84 @@ const diffToDelta = (diffResult) => {
     .filter(Boolean);
 };
 
-export const updateObjectDoc = (fieldName, fieldValue, schema, objectDoc) => {
+export const updateObjectDoc = (
+  fieldName,
+  fieldValue,
+  schema,
+  valsMap,
+  isArrayChanged,
+) => {
   const parsedObject = {};
   deepAssignKeyValue(fieldName, fieldValue, parsedObject);
-  deepAssignToDoc(parsedObject, objectDoc.getMap("vals"), schema);
+  deepAssignToDoc(parsedObject, valsMap, schema, isArrayChanged);
 };
 
-const applyToParent = (parentType, sharedType, fieldName, isArrayIndex) => {
-  if (isArrayIndex) {
-    parentType.insert(fieldName, [sharedType]);
+const applyToParent = (parentType, fieldName, value, isArray) => {
+  if (isArray) {
+    if (parentType.get(fieldName)) {
+      parentType.delete(fieldName);
+    }
+    parentType.insert(fieldName, [value]);
   } else {
-    parentType.set(fieldName, sharedType);
+    parentType.set(fieldName, value);
   }
+};
+
+const updateParent = (parentType, schemaType, fieldName, value, isArray) => {
+  let yType = null;
+  if (schemaType === "array") yType = Y.Array;
+  if (schemaType === "object") yType = Y.Map;
+  if (schemaType === "string") yType = Y.Text;
+
+  if (!yType) {
+    applyToParent(parentType, fieldName, value, isArray);
+    return null;
+  }
+
+  let yObject = parentType.get(fieldName, yType);
+
+  if (!yObject) {
+    yObject = new yType();
+    applyToParent(parentType, fieldName, yObject, isArray);
+  }
+
+  return yObject;
 };
 
 export const deepAssignToDoc = (
   parsedObject,
   parentType,
   schema,
-  isArrayIndex,
+  shouldCheckArrayItems = false,
+  isArray = false,
 ) => {
   Object.entries(parsedObject)
-    .filter(
-      ([fieldName]) =>
-        /**
-         * @todo
-         * Due to no hydration in middleware, we need to omit the relations.
-         * Remove the condition "!schema[fieldName].items?.$ref" when hydration is available
-         */
-        isArrayIndex || (!!schema[fieldName] && !schema[fieldName].items?.$ref),
-    )
+    .filter(([fieldName]) => (isArray && schema) || !!schema[fieldName])
     .forEach(([fieldName, value]) => {
-      const fieldSchema = isArrayIndex ? schema : schema[fieldName];
+      const fieldSchema = !isArray ? schema[fieldName] : schema;
 
-      if (["array", "object"].includes(fieldSchema.type) || isArrayIndex) {
-        const isArray = fieldSchema.type === "array";
-        let yType = parentType.get(fieldName, isArray ? Y.Array : Y.Map);
+      const yType = updateParent(
+        parentType,
+        fieldSchema.type,
+        fieldName,
+        value,
+        isArray,
+      );
 
-        if (!yType) {
-          yType = isArray ? new Y.Array() : new Y.Map();
-          applyToParent(parentType, yType, fieldName, isArrayIndex);
+      if (yType) {
+        if (fieldSchema.type === "array") {
+          if (shouldCheckArrayItems && value.length !== yType.length) {
+            const lengthDiff = yType.length - value.length;
+            yType.delete(yType.length - lengthDiff, lengthDiff);
+          }
+
+          deepAssignToDoc(value, yType, fieldSchema.items, true, true);
+        } else if (fieldSchema.type === "object") {
+          deepAssignToDoc(value, yType, fieldSchema.properties, true);
+        } else {
+          const delta = diffToDelta(diff(yType.toString(), value));
+          yType.applyDelta(delta);
         }
-
-        if (isArray && !isArrayIndex && value.length !== yType.length) {
-          const lengthDiff = yType.length - value.length;
-          yType.delete(yType.length - lengthDiff, lengthDiff);
-        }
-
-        return deepAssignToDoc(
-          value,
-          yType,
-          isArrayIndex
-            ? fieldSchema
-            : fieldSchema.items?.properties ||
-                fieldSchema.properties ||
-                fieldSchema.items,
-          fieldSchema.type === "array" && !isArrayIndex,
-        );
-      }
-
-      if (fieldSchema.type === "string") {
-        let ytext = parentType.get(fieldName, Y.Text);
-        if (!ytext) {
-          ytext = new Y.Text();
-          applyToParent(parentType, ytext, fieldName, isArrayIndex);
-        }
-        const delta = diffToDelta(diff(ytext.toString(), value));
-        ytext.applyDelta(delta);
-      } else {
-        applyToParent(parentType, value, fieldName, isArrayIndex);
       }
     });
 };
