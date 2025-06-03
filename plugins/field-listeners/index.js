@@ -2,9 +2,22 @@ import pluginInfo from "../../plugin-manifest.json";
 import { getObjectWSConnection } from "../../common/websockets";
 import { deepAssignToDoc, updateObjectDoc } from "../../common/yjs";
 
-const updateDoc = (fieldName, newValue, schema, objectDoc, formikValues) => {
+const updateDoc = (
+  fieldName,
+  newValue,
+  schema,
+  objectDoc,
+  formikValues,
+  isArrayChanged,
+) => {
   if (objectDoc.getMap("vals").size) {
-    updateObjectDoc(fieldName, newValue, schema, objectDoc);
+    updateObjectDoc(
+      fieldName,
+      newValue,
+      schema,
+      objectDoc.getMap("vals"),
+      isArrayChanged,
+    );
   } else {
     deepAssignToDoc(formikValues, objectDoc.getMap("vals"), schema);
   }
@@ -39,8 +52,15 @@ export const handleFormFieldListenrsAdd = (
     onBlur: () => {
       wsConnection.ws.awareness.setLocalStateField("activeField", undefined);
     },
-    onChange: ({ value }) => {
-      updateDoc(name, value, schema, wsConnection.doc, formik.values);
+    onChange: ({ value, fieldApi }) => {
+      updateDoc(
+        name,
+        value,
+        schema,
+        wsConnection.doc,
+        formik.values,
+        fieldApi.options.mode === "array",
+      );
     },
   };
 };
