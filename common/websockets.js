@@ -35,6 +35,7 @@ function getWebSocketConnection(apiKey, roomId, apiUrl) {
       }
 
       ws.awareness.destroy();
+      connections.clear(roomId);
     });
 
     ws.on("status", (isOpened) => {
