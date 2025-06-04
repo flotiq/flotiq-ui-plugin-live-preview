@@ -22,7 +22,7 @@ export const handlePanelPlugin = (
   if (!pluginContainer) {
     pluginContainer = createPanelElement(create);
 
-    addElementToCache(pluginContainer, cacheKey, {}, () => {
+    addElementToCache(pluginContainer, cacheKey, null, () => {
       clearConnections();
     });
   }

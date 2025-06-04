@@ -13,18 +13,6 @@ export const openedState = {
   link: null,
 };
 
-const messageEvent = (event) => {
-  if (event.data?.message !== "Live preview time updated" || !event.data?.time)
-    return;
-  const livePreviewUpdated = document
-    .querySelector(".plugin-live-preview__secondary-column")
-    .querySelector(".plugin-live-preview__status-info");
-
-  livePreviewUpdated.textContent = i18n.t("LivePreviewUpdated", {
-    time: event.data.time,
-  });
-};
-
 export const createSecondaryColumn = (rerender) => {
   const panelElement = document.createElement("div");
   panelElement.className = "plugin-live-preview__secondary-column";
@@ -81,29 +69,6 @@ export const createSecondaryColumn = (rerender) => {
         </div>
     </div>
   `;
-
-  const resizeEvent = () => {
-    if (window.innerWidth < 1024) {
-      openedState.isOpened = false;
-      rerender();
-    }
-  };
-
-  panelElement.addEventListener(
-    "flotiq.attached",
-    () => {
-      if (!panelElement.parentElement) return;
-      panelElement.parentElement.className = "plugin-live-preview__wrapper";
-      window.addEventListener("message", messageEvent);
-      window.addEventListener("resize", resizeEvent);
-    },
-    true,
-  );
-
-  panelElement.addEventListener("flotiq.detached", () => {
-    window.removeEventListener("message", messageEvent);
-    window.removeEventListener("resize", resizeEvent);
-  });
 
   const button = panelElement.querySelector(".plugin-live-preview__close");
   button.onclick = () => {
