@@ -11,11 +11,11 @@
      id="defs2" />
   <path
      d="M 12.01665,1.73008 8.92955,1.72411 V 0.04023 h 5.9712 v 5.97124 h -1.6838 l -0.006,-3.08715 -5.7742,5.77415 -1.1942,-1.1942 z"
-     fill="#0083fc"
+     fill="currentColor"
      id="path1" />
   <path
      d="M 5.40805,0.83111 H 0.83111 v 13.22226 h 13.22224 v -5.0855"
-     stroke="#0083fc"
+     stroke="currentColor"
      stroke-width="1.66222"
      stroke-linejoin="round"
      id="path2" />

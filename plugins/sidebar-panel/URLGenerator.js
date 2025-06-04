@@ -1,9 +1,10 @@
 import { deepReadKeyValue } from "../../common/lib";
 
 export class URLGenerator {
-  constructor(config, spaceId) {
+  constructor(config, spaceId, userId) {
     this.config = config;
     this.spaceId = spaceId;
+    this.userId = userId;
   }
 
   getURL(object) {
@@ -13,6 +14,7 @@ export class URLGenerator {
     baseURLInstance.searchParams.set("key", this.config.editor_key);
     baseURLInstance.searchParams.set("apiKey", this.config.api_key);
     baseURLInstance.searchParams.set("spaceId", this.spaceId);
+    baseURLInstance.searchParams.set("userId", this.userId);
     baseURLInstance.searchParams.set("objectId", object.id);
     baseURLInstance.searchParams.set(
       "contentType",

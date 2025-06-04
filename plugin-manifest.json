@@ -1,6 +1,6 @@
 {
-  "id": "flotiq.live-preview",
-  "name": "Live Preview",
+  "id": "flotiq.live-preview-dev",
+  "name": "Live Preview DEV",
   "description": "The Live Preview Plugin is used for real-time transmission of data from content object forms, allowing the end application to display content changes live.",
   "version": "0.5.0",
   "repository": "https://github.com/flotiq/flotiq-ui-plugin-live-preview",

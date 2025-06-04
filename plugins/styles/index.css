@@ -104,3 +104,115 @@
     width: 12px;
   }
 }
+
+/* Form secondary column  */
+
+.plugin-live-preview__wrapper {
+  height: 100%;
+  overflow: clip;
+}
+
+.plugin-live-preview__secondary-column {
+  height: calc(100vh - 90px);
+  font-size: 14px;
+  align-items: center;
+  border-radius: 0.5rem;
+  background-color: white;
+  overflow: hidden;
+  position: sticky;
+  top: 70px;
+}
+
+.plugin-live-preview__status-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px minmax(0, 1fr);
+  width: 100%;
+  padding: 13px 28px 13px 30px;
+  background: white;
+  border-bottom: 1px solid #dae3f2;
+}
+
+.plugin-live-preview__status-bar__wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.plugin-live-preview__status-bar__wrapper--middle {
+  margin: auto;
+}
+
+.plugin-live-preview__status-bar__wrapper--end {
+  justify-self: end;
+}
+
+.plugin-live-preview__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 7px;
+  position: relative;
+  background-color: #0083fc;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  margin: auto 12px;
+}
+
+.plugin-live-preview__status-dot::before {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 300%;
+  height: 300%;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background-color: #0083fc;
+  opacity: 0.5;
+  animation: flotiq-plugin-live-preview__pulse 1.25s
+    cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  top: -7px;
+  left: -7px;
+}
+
+@keyframes flotiq-plugin-live-preview__pulse {
+  0% {
+    transform: scale(0.33);
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.plugin-live-preview__status-button {
+  height: 32px;
+  width: 32px;
+  display: flex;
+  margin-right: 8px;
+  color: #141046;
+}
+
+.plugin-live-preview__status-button--blue {
+  color: #0083fc;
+}
+
+.plugin-live-preview__status-button > svg {
+  margin: auto;
+}
+
+.plugin-live-preview__iframe {
+  width: 100%;
+  height: calc(100% - 52px);
+  margin: auto;
+}
+
+.plugin-live-preview__secondary-column[data-size="mobile"]
+  .plugin-live-preview__iframe {
+  max-width: 390px;
+}
+
+.plugin-live-preview__secondary-column[data-size="full-size"] {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
