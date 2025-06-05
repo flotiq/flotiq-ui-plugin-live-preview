@@ -9,6 +9,7 @@ import cssString from "inline:./styles/index.css";
 import { handleChangeTranslation } from "./mulitlingual-translations";
 import { handleFormFieldListenrsAdd } from "./field-listeners";
 import { handleSecondaryColumnAdd } from "./form-secondary-column";
+import { handleFormRelationChanged } from "./form-relation-changed";
 
 const rerenderFn = {};
 
@@ -62,6 +63,10 @@ registerFn(
       if (language !== i18n.language) {
         i18n.changeLanguage(language);
       }
+    });
+
+    handler.on("flotiq.form.relation::after-submit", (data) => {
+      handleFormRelationChanged(data, getPluginSettings, getSpaceId, getApiUrl);
     });
 
     handler.on("flotiq-multilingual.translation::changed", (data) => {

@@ -21,7 +21,7 @@ export const createSecondaryColumn = (rerender) => {
       <div class="plugin-live-preview__status-bar">
         <div class="plugin-live-preview__status-bar__wrapper">
           <div class="plugin-live-preview__status-dot"></div>
-          <div class="plugin-live-preview__status-info">${i18n.t("Connected")}</div>
+          <div class="plugin-live-preview__status-info">${i18n.t("Connecting")}</div>
           <button 
             class="plugin-live-preview__status-button 
                   plugin-live-preview__status-button--blue 
@@ -90,6 +90,7 @@ export const createSecondaryColumn = (rerender) => {
   const iframe = document.createElement("iframe");
   iframe.src = openedState.link;
   iframe.className = "plugin-live-preview__iframe";
+  iframe.referrerPolicy = "origin";
   panelElement.appendChild(iframe);
 
   const reloadButton = panelElement.querySelector(

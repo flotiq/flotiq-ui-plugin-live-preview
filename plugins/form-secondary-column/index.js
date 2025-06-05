@@ -8,15 +8,17 @@ import pluginInfo from "../../plugin-manifest.json";
 import { createSecondaryColumn, openedState } from "./column-element";
 
 const messageEvent = (event) => {
-  if (event.data?.message !== "Live preview time updated" || !event.data?.time)
-    return;
+  if (event.data?.message !== "Live preview time updated") return;
+
   const livePreviewUpdated = document
     .querySelector(".plugin-live-preview__secondary-column")
     .querySelector(".plugin-live-preview__status-info");
 
-  livePreviewUpdated.textContent = i18n.t("LivePreviewUpdated", {
-    time: event.data.time,
-  });
+  livePreviewUpdated.textContent = event.data?.time
+    ? i18n.t("LivePreviewUpdated", {
+        time: event.data.time,
+      })
+    : i18n.t("Connected");
 };
 
 export const handleSecondaryColumnAdd = (
