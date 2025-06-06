@@ -8,6 +8,10 @@ import { handlePanelPlugin } from "./sidebar-panel";
 import cssString from "inline:./styles/index.css";
 import { handleChangeTranslation } from "./mulitlingual-translations";
 import { handleFormFieldListenrsAdd } from "./field-listeners";
+import { handleSecondaryColumnAdd } from "./form-secondary-column";
+import { handleFormRelationChanged } from "./form-relation-changed";
+
+const rerenderFn = {};
 
 const loadStyles = () => {
   if (!document.getElementById(`${pluginInfo.id}-styles`)) {
@@ -36,7 +40,7 @@ registerFn(
       handleManagePlugin(data),
     );
     handler.on("flotiq.form.sidebar-panel::add", (data) =>
-      handlePanelPlugin(data, getPluginSettings, getSpaceId),
+      handlePanelPlugin(data, getPluginSettings, getSpaceId, rerenderFn.column),
     );
     handler.on("flotiq.form.field::config", (data) =>
       handleFormFieldConfig(data, getPluginSettings, getSpaceId, getApiUrl),
@@ -49,10 +53,20 @@ registerFn(
         getApiUrl,
       ),
     );
+
+    handler.on("flotiq.form.secondary-column::add", (data) => {
+      rerenderFn.column = data.rerender;
+      return handleSecondaryColumnAdd(data, getPluginSettings);
+    });
+
     handler.on("flotiq.language::changed", ({ language }) => {
       if (language !== i18n.language) {
         i18n.changeLanguage(language);
       }
+    });
+
+    handler.on("flotiq.form.relation::after-submit", (data) => {
+      handleFormRelationChanged(data, getPluginSettings, getSpaceId, getApiUrl);
     });
 
     handler.on("flotiq-multilingual.translation::changed", (data) => {

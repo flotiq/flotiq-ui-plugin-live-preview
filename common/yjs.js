@@ -31,9 +31,13 @@ export const updateObjectDoc = (
 const applyToParent = (parentType, fieldName, value, isArray) => {
   if (isArray) {
     if (parentType.get(fieldName)) {
-      parentType.delete(fieldName);
+      parentType.doc.transact(() => {
+        parentType.delete(fieldName);
+        parentType.insert(fieldName, [value]);
+      });
+    } else {
+      parentType.insert(fieldName, [value]);
     }
-    parentType.insert(fieldName, [value]);
   } else {
     parentType.set(fieldName, value);
   }

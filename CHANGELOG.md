@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [0.7.0]
+### Added
+* editing object from relation modal is sending information to the live preview #26808
+
+### Changed
+* open appliaction iframe on live preview button click #26808
+
+### Fixed
+* from now, array item replacement is in one transation (before it was in two transactions: delete and insert)
+
 ## [0.6.0]
 ### Added
 * support for list fields #26780

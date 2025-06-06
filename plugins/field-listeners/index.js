@@ -2,7 +2,7 @@ import pluginInfo from "../../plugin-manifest.json";
 import { getObjectWSConnection } from "../../common/websockets";
 import { deepAssignToDoc, updateObjectDoc } from "../../common/yjs";
 
-const updateDoc = (
+export const updateDoc = (
   fieldName,
   newValue,
   schema,

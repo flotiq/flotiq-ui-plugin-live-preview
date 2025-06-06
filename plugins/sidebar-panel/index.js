@@ -11,6 +11,7 @@ export const handlePanelPlugin = (
   { contentType, contentObject, formik, create },
   getPluginSettings,
   getSpaceId,
+  rerenderColumn,
 ) => {
   if (!contentType?.name || !formik) return null;
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
@@ -21,7 +22,7 @@ export const handlePanelPlugin = (
   if (!pluginContainer) {
     pluginContainer = createPanelElement(create);
 
-    addElementToCache(pluginContainer, cacheKey, {}, () => {
+    addElementToCache(pluginContainer, cacheKey, null, () => {
       clearConnections();
     });
   }
@@ -35,6 +36,7 @@ export const handlePanelPlugin = (
     objectData,
     spaceId,
     create,
+    rerenderColumn,
   );
 
   return pluginContainer;

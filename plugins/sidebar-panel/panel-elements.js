@@ -1,8 +1,19 @@
 import previewIcon from "inline:../../images/preview-icon.svg";
 import { URLGenerator } from "./URLGenerator";
 import i18n from "../../i18n";
+import { openedState } from "../form-secondary-column/column-element";
 
 let tabRef = null;
+
+export const openInNewTab = (link) => {
+  if (tabRef && !tabRef?.closed) {
+    tabRef.location.replace(link);
+    tabRef.focus();
+  } else {
+    tabRef = window.open(link, "_blank");
+    window.tabRef = tabRef;
+  }
+};
 
 export const createPanelElement = (disabled) => {
   const panelElement = document.createElement("div");
@@ -15,11 +26,11 @@ export const createPanelElement = (disabled) => {
       <div class="plugin-live-preview__button-list"></div>
   `;
 
-  if(disabled) {
-    container += /* html */  `
+  if (disabled) {
+    container += /* html */ `
         <span class="plugin-live-preview__disabled">
-            ${ i18n.t("SaveToPreview") }
-        </span>`
+            ${i18n.t("SaveToPreview")}
+        </span>`;
   }
 
   panelElement.innerHTML = container;
@@ -42,6 +53,7 @@ export const updatePanelElement = (
   data,
   spaceId,
   disabled,
+  rerenderColumn,
 ) => {
   const buttonList = pluginContainer.querySelector(
     ".plugin-live-preview__button-list",
@@ -53,7 +65,14 @@ export const updatePanelElement = (
       htmlItem = createLink();
       buttonList.appendChild(htmlItem);
     }
-    updateLink(htmlItem, buttonSettings, data, spaceId, disabled);
+    updateLink(
+      htmlItem,
+      buttonSettings,
+      data,
+      spaceId,
+      disabled,
+      rerenderColumn,
+    );
     return htmlItem;
   });
 
@@ -74,8 +93,17 @@ const createLink = () => {
   return linkItem;
 };
 
-const updateLink = (htmlElement, config, contentObject, spaceId, disabled) => {
-  const urlGenerator = new URLGenerator(config, spaceId);
+const updateLink = (
+  htmlElement,
+  config,
+  contentObject,
+  spaceId,
+  disabled,
+  rerenderColumn,
+) => {
+  const userId = JSON.parse(window.localStorage["cms.user"]).data?.id;
+
+  const urlGenerator = new URLGenerator(config, spaceId, userId);
   const link = urlGenerator.getURL(contentObject);
 
   htmlElement.querySelector("span").textContent = i18n.t("Preview");
@@ -84,7 +112,7 @@ const updateLink = (htmlElement, config, contentObject, spaceId, disabled) => {
     htmlElement.classList.add("plugin-live-preview__link--disabled");
     htmlElement.onclick = (event) => {
       event.preventDefault();
-    }
+    };
     return;
   }
 
@@ -93,12 +121,12 @@ const updateLink = (htmlElement, config, contentObject, spaceId, disabled) => {
   htmlElement.onclick = (event) => {
     event.preventDefault();
 
-    if (tabRef && !tabRef?.closed) {
-      tabRef.location.replace(link);
-      tabRef.focus();
+    if (window.innerWidth < 1024) {
+      openInNewTab(link);
     } else {
-      tabRef = window.open(link, "_blank");
-      window.tabRef = tabRef;
+      openedState.isOpened = true;
+      openedState.link = link;
+      rerenderColumn?.();
     }
   };
 };
