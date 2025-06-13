@@ -56,7 +56,7 @@ registerFn(
 
     handler.on("flotiq.form.secondary-column::add", (data) => {
       rerenderFn.column = data.rerender;
-      return handleSecondaryColumnAdd(data, getPluginSettings);
+      return handleSecondaryColumnAdd(data, getPluginSettings, getSpaceId);
     });
 
     handler.on("flotiq.language::changed", ({ language }) => {

@@ -5,6 +5,7 @@ import {
 import { getCtdSettings } from "../../common/settings-parser";
 import i18n from "../../i18n";
 import pluginInfo from "../../plugin-manifest.json";
+import { URLGenerator } from "../sidebar-panel/URLGenerator";
 import { createSecondaryColumn, openedState } from "./column-element";
 
 const messageEvent = (event) => {
@@ -21,10 +22,27 @@ const messageEvent = (event) => {
     : i18n.t("Connected");
 };
 
+const onIframeClose = (rerender) => {
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("livePreviewOpened") === "true") {
+    url.searchParams.delete("livePreviewOpened");
+    window.history.replaceState("", document.title, url.toString());
+  }
+
+  openedState.isOpened = false;
+  rerender();
+};
+
 export const handleSecondaryColumnAdd = (
   { contentType, contentObject, formik, rerender },
   getPluginSettings,
+  getSpaceId,
 ) => {
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("livePreviewOpened") === "true") {
+    openedState.isOpened = true;
+  }
+
   if (!contentType?.name || !formik || !openedState.isOpened) return null;
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
   if (!settingsForCtd?.length) return null;
@@ -33,16 +51,20 @@ export const handleSecondaryColumnAdd = (
   let panelElement = getCachedElement(cacheKey)?.element;
 
   if (!panelElement) {
-    panelElement = createSecondaryColumn(rerender);
+    const userId = JSON.parse(window.localStorage["cms.user"]).data?.id;
 
-    const removeColumn = () => {
-      openedState.isOpened = false;
-      rerender();
-    };
+    const urlGenerator = new URLGenerator(
+      settingsForCtd[0],
+      getSpaceId(),
+      userId,
+    );
+    const baseLink = urlGenerator.getURL(contentObject);
+
+    panelElement = createSecondaryColumn(rerender, baseLink, onIframeClose);
 
     const resizeEvent = () => {
       if (window.innerWidth < 1024) {
-        removeColumn();
+        onIframeClose(rerender);
       }
     };
 
@@ -58,7 +80,7 @@ export const handleSecondaryColumnAdd = (
       () => {
         window.removeEventListener("message", messageEvent);
         window.removeEventListener("resize", resizeEvent);
-        removeColumn();
+        onIframeClose(rerender);
       },
     );
   }
