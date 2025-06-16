@@ -13,7 +13,7 @@ export const openedState = {
   link: null,
 };
 
-export const createSecondaryColumn = (rerender) => {
+export const createSecondaryColumn = (rerender, baseLink, onIframeClose) => {
   const panelElement = document.createElement("div");
   panelElement.className = "plugin-live-preview__secondary-column";
 
@@ -72,23 +72,24 @@ export const createSecondaryColumn = (rerender) => {
 
   const button = panelElement.querySelector(".plugin-live-preview__close");
   button.onclick = () => {
-    openedState.isOpened = false;
-    rerender();
+    onIframeClose(rerender);
   };
 
   const openInNewTabLink = panelElement.querySelector(
     ".plugin-live-preview__open-tab",
   );
 
-  openInNewTabLink.href = openedState.link;
+  const link = openedState.link || baseLink;
+
+  openInNewTabLink.href = link;
 
   openInNewTabLink.onclick = (event) => {
     event.preventDefault();
-    openInNewTab(openedState.link);
+    openInNewTab(link);
   };
 
   const iframe = document.createElement("iframe");
-  iframe.src = openedState.link;
+  iframe.src = link;
   iframe.className = "plugin-live-preview__iframe";
   iframe.referrerPolicy = "origin";
   panelElement.appendChild(iframe);
