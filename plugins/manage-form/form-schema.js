@@ -22,7 +22,6 @@ export const getSchema = (contentTypes) => ({
           },
           editor_key: {
             type: "string",
-            minLength: 1,
           },
           api_key: {
             type: "string",
@@ -48,7 +47,7 @@ export const getSchema = (contentTypes) => ({
         },
       },
     ],
-    required: ["base_url", "editor_key", "api_key"],
+    required: ["base_url", "api_key"],
     additionalProperties: false,
   },
   metaDefinition: {

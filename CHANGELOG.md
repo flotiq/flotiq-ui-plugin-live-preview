@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [0.7.2]
+### Changed
+* `Client Authorization key` is no longer required #26939
+* `Client Authorization key` is passed as `editor_key` URL param #26939
+
 ## [0.7.1]
 ### Added
 * from now, if URL has search param livePreviewOpened set to "true", the live preview panel will be automatically opened #26915
