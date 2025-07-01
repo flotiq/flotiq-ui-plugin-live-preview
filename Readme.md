@@ -30,7 +30,7 @@ To start, you may want to use http://localhost:3000 to easily navigate between F
 
 ### Client Authorisation Key
 
-This key grants access to view live preview data on your website. Make sure to define it in your application's environment variables. Without validating this key, evenrybody can see your live preview data.
+This key grants access to view live preview data on your website. Ensure that you define it in your application's environment variables. Without validating this key, everybody can see your live preview data.
 
 ### API Key
 
