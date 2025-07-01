@@ -11,7 +11,11 @@ export class URLGenerator {
     const baseURLInstance = new URL(
       `${this.config.base_url.replace(/\/+$/, "")}/api/flotiq/live-preview`,
     );
-    baseURLInstance.searchParams.set("key", this.config.editor_key);
+
+    if (this.config.editor_key) {
+      baseURLInstance.searchParams.set("editor_key", this.config.editor_key);
+    }
+
     baseURLInstance.searchParams.set("apiKey", this.config.api_key);
     baseURLInstance.searchParams.set("spaceId", this.spaceId);
     baseURLInstance.searchParams.set("userId", this.userId);
