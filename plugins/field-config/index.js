@@ -2,12 +2,12 @@ import pluginInfo from "../../plugin-manifest.json";
 import { getObjectWSConnection } from "../../common/websockets";
 
 export const handleFormFieldConfig = (
-  { config, contentType, name, initialData, formik, create },
+  { config, contentType, name, initialData, form, create },
   getPluginSettings,
   getSpaceId,
   getApiUrl,
 ) => {
-  if (!formik || create || !contentType) return;
+  if (!form || create || !contentType) return;
 
   if (contentType?.id === pluginInfo.id && contentType?.nonCtdSchema) {
     if (["editor_key", "api_key"].includes(name)) {

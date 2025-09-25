@@ -34,7 +34,7 @@ const onIframeClose = (rerender) => {
 };
 
 export const handleSecondaryColumnAdd = (
-  { contentType, contentObject, formik, rerender },
+  { contentType, contentObject, form, rerender },
   getPluginSettings,
   getSpaceId,
 ) => {
@@ -43,7 +43,7 @@ export const handleSecondaryColumnAdd = (
     openedState.isOpened = true;
   }
 
-  if (!contentType?.name || !formik || !openedState.isOpened) return null;
+  if (!contentType?.name || !form || !openedState.isOpened) return null;
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
   if (!settingsForCtd?.length) return null;
 
