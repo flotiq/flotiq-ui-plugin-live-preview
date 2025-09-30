@@ -8,12 +8,12 @@ import { clearConnections } from "../../common/websockets";
 import { createPanelElement, updatePanelElement } from "./panel-elements";
 
 export const handlePanelPlugin = (
-  { contentType, contentObject, formik, create },
+  { contentType, contentObject, form, create },
   getPluginSettings,
   getSpaceId,
   rerenderColumn,
 ) => {
-  if (!contentType?.name || !formik) return null;
+  if (!contentType?.name || !form) return null;
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
   if (!settingsForCtd?.length) return null;
 
@@ -29,7 +29,7 @@ export const handlePanelPlugin = (
 
   const spaceId = getSpaceId();
 
-  const objectData = { ...contentObject, ...formik.values };
+  const objectData = { ...contentObject, ...form.getValues() };
   updatePanelElement(
     pluginContainer,
     settingsForCtd,

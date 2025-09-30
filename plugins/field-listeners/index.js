@@ -7,7 +7,7 @@ export const updateDoc = (
   newValue,
   schema,
   objectDoc,
-  formikValues,
+  formValues,
   isArrayChanged,
 ) => {
   if (objectDoc.getMap("vals").size) {
@@ -19,17 +19,17 @@ export const updateDoc = (
       isArrayChanged,
     );
   } else {
-    deepAssignToDoc(formikValues, objectDoc.getMap("vals"), schema);
+    deepAssignToDoc(formValues, objectDoc.getMap("vals"), schema);
   }
 };
 
 export const handleFormFieldListenrsAdd = (
-  { contentType, initialData, formik, name, create },
+  { contentType, initialData, form, name, create },
   getPluginSettings,
   getSpaceId,
   getApiUrl,
 ) => {
-  if (!formik || create || !contentType) return;
+  if (!form || create || !contentType) return;
 
   if (contentType?.id === pluginInfo.id && contentType?.nonCtdSchema) {
     return;
@@ -58,7 +58,7 @@ export const handleFormFieldListenrsAdd = (
         value,
         schema,
         wsConnection.doc,
-        formik.values,
+        form.getValues(),
         fieldApi.options.mode === "array",
       );
     },
