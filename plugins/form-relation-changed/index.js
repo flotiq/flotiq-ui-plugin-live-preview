@@ -38,8 +38,6 @@ export const handleFormRelationChanged = (
     id: relationContentObject.id,
   });
 
-  console.log(fieldName, relation);
-
   updateDoc(
     fieldName,
     JSON.parse(JSON.stringify(relation)),

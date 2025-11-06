@@ -25,18 +25,19 @@ export const updateObjectDoc = (
 ) => {
   const parsedObject = {};
   deepAssignKeyValue(fieldName, fieldValue, parsedObject);
-  deepAssignToDoc(parsedObject, valsMap, schema, isArrayChanged);
+  valsMap.doc.transact(() => {
+    deepAssignToDoc(parsedObject, valsMap, schema, isArrayChanged);
+  });
 };
 
 const applyToParent = (parentType, fieldName, value, isArray) => {
   if (isArray) {
-    if (parentType.get(fieldName)) {
-      parentType.doc.transact(() => {
-        parentType.delete(fieldName);
-        parentType.insert(fieldName, [value]);
-      });
+    const index = +fieldName;
+    if (index < parentType.length) {
+      parentType.delete(index);
+      parentType.insert(index, [value]);
     } else {
-      parentType.insert(fieldName, [value]);
+      parentType.insert(index, [value]);
     }
   } else {
     parentType.set(fieldName, value);
@@ -86,12 +87,13 @@ export const deepAssignToDoc = (
 
       if (yType) {
         if (fieldSchema.type === "array") {
-          if (shouldCheckArrayItems && value.length !== yType.length) {
-            const lengthDiff = yType.length - value.length;
-            yType.delete(yType.length - lengthDiff, lengthDiff);
-          }
-
-          deepAssignToDoc(value, yType, fieldSchema.items, true, true);
+          yType.doc.transact(() => {
+            if (shouldCheckArrayItems && value.length !== yType.length) {
+              const lengthDiff = yType.length - value.length;
+              yType.delete(yType.length - lengthDiff, lengthDiff);
+            }
+            deepAssignToDoc(value, yType, fieldSchema.items, true, true);
+          });
         } else if (fieldSchema.type === "object") {
           deepAssignToDoc(value, yType, fieldSchema.properties, true);
         } else {
