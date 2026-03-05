@@ -4,6 +4,9 @@ module.exports = {
     browser: true,
     es6: true,
   },
+  globals: {
+    process: "readonly",
+  },
   extends: ["eslint:recommended", "prettier"],
   parserOptions: {
     sourceType: "module",

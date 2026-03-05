@@ -5,12 +5,14 @@ import inlineImportPlugin from "esbuild-plugin-inline-import";
 import url from "postcss-url";
 import postcss from "postcss";
 import { copy } from "esbuild-plugin-copy";
+import dotenvFlow from "dotenv-flow";
 
 import http from "node:http";
 import https from "node:https";
 import fs from "fs";
 
 const watch = process.argv.includes("--watch");
+dotenvFlow.config({ silent: true });
 
 function formatDuration(seconds) {
   const time = {
@@ -59,6 +61,9 @@ const context = await esbuild.context({
   minify: true,
   sourcemap: true,
   outfile: "dist/index.js",
+  define: {
+    "process.env.WS_ENDPOINT": JSON.stringify(process.env.WS_ENDPOINT ?? ""),
+  },
 
   plugins: [
     copy({

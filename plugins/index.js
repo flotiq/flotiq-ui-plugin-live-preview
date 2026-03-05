@@ -10,6 +10,7 @@ import { handleChangeTranslation } from "./mulitlingual-translations";
 import { handleFormFieldListenrsAdd } from "./field-listeners";
 import { handleSecondaryColumnAdd } from "./form-secondary-column";
 import { handleFormRelationChanged } from "./form-relation-changed";
+import { handleFormAfterSubmit } from "./form-after-submit";
 
 const rerenderFn = {};
 
@@ -68,6 +69,10 @@ registerFn(
     handler.on("flotiq.form.relation::after-submit", (data) => {
       handleFormRelationChanged(data, getPluginSettings, getSpaceId, getApiUrl);
     });
+
+    handler.on("flotiq.form::after-submit", (data) =>
+      handleFormAfterSubmit(data, getPluginSettings, getSpaceId, getApiUrl),
+    );
 
     handler.on("flotiq-multilingual.translation::changed", (data) => {
       handleChangeTranslation(data, getPluginSettings, getSpaceId, getApiUrl);

@@ -20,6 +20,30 @@ Imagine you've already have draft for a blog post, but now you want to make some
 
 ![Live preview button](./.docs/live-preview-button.png)
 
+### Websocket debug panel
+
+When troubleshooting live preview synchronization, you can enable a debug panel that shows active websocket rooms and Yjs state details.
+
+1. Open Flotiq editor with this plugin loaded.
+2. Open the browser developer console.
+3. Run:
+   ```javascript
+   sessionStorage.setItem("flotiq-live-preview-debug", "1")
+   ```
+
+The panel appears in the bottom-right corner and displays:
+
+- total websocket connections,
+- room-level connection status,
+- Yjs document details (`guid`, `clientId`, shared collections),
+- awareness states for connected clients.
+
+To disable it, click the panel close button or run:
+
+```javascript
+sessionStorage.setItem("flotiq-live-preview-debug", "0")
+```
+
 ## Configuration
 
 ![Live Preview settings](./.docs/live-preview-settings.png)

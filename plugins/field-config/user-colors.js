@@ -21,5 +21,5 @@ export const strToChecksum = (...args) => {
 export const getUserColor = (userId, light = false) => {
   const randomHue = strToChecksum(userId, "hue") % 360;
   const randomSaturation = strToChecksum(userId, "saturation") % 100;
-  return `hsl(${randomHue} ${randomSaturation}% ${light ? "80%" : "30%"}`;
+  return `hsl(${randomHue} ${Math.abs(randomSaturation)}% ${light ? "80%" : "30%"})`;
 };

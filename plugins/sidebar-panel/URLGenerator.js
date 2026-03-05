@@ -25,12 +25,20 @@ export class URLGenerator {
       object.internal?.contentType,
     );
 
+    const identifyingFields = {};
     const path = this.config.route_template.replace(
       /{(?<key>[^{}]+)}/g,
       (...params) => {
         const { key } = params[4];
-        return deepReadKeyValue(key, object);
+        const value = deepReadKeyValue(key, object);
+        identifyingFields[key] = `${value ?? ""}`;
+        return value;
       },
+    );
+
+    baseURLInstance.searchParams.set(
+      "identifyingFields",
+      JSON.stringify(identifyingFields),
     );
 
     baseURLInstance.searchParams.set("live-preview", "true");
