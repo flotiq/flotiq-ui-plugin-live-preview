@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [0.8.0]
+### Added
+* websocket debug panel for inspecting active rooms, Yjs documents and awareness state #27596
+* send refetch signal after successful form submit so live preview can reload saved content #27596
+
+### Changed
+* redesigned websocket integration to work with the new collaboration gateway #27596
+* generated live preview URLs now include `identifyingFields` resolved from the route template #27596
+
+### Fixed
+* array editing no longer removes objects from the Yjs document unexpectedly
+* colors assigned to editor no longer produce incorrect lightness value
+* changes made in list object will no longer remove the remaining list items
+* connection is now correctly closed only for the edited document
+* connection is now correctly reestablished when any network failures happen while working on the document
+
 ## [0.7.4]
 ### Fixed
 * updating relations #27291
