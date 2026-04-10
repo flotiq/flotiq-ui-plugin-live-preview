@@ -17,7 +17,7 @@ function getWebSocketEndpoint(apiUrl) {
 
   return apiUrl !== "https://api.flotiq.com"
     ? "wss://flotiq-websockets-staging.dev.cdwv.pl"
-    : "wss://sockets.flotiq.com";
+    : "wss://collab-gateway.flotiq.com";
 }
 
 function disposeConnection(roomId) {
