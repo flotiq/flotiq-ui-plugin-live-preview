@@ -13,3 +13,12 @@ export const getCtdSettings = (pluginSettings, contentTypeName) => {
       api_key: parsedSettings.api_key,
     }));
 };
+
+export const getGlobalSettings = (pluginSettings) => {
+  const parsedSettings = JSON.parse(pluginSettings || "{}");
+  return {
+    editor_key: parsedSettings.editor_key,
+    base_url: parsedSettings.base_url,
+    api_key: parsedSettings.api_key,
+  };
+};

@@ -2,6 +2,18 @@ import * as Y from "yjs";
 import diff from "fast-diff";
 import { deepAssignKeyValue } from "./lib";
 
+const parseFieldPath = (fieldName) => {
+  return fieldName.split(/[[.\]]/).filter((keyPart) => !!keyPart);
+};
+
+const isSameFieldPath = (currentPath, targetPath) => {
+  if (!targetPath || currentPath.length !== targetPath.length) return false;
+
+  return currentPath.every(
+    (pathSegment, index) => pathSegment === targetPath[index],
+  );
+};
+
 /** Convert a fast-diff result to a YJS delta. */
 const diffToDelta = (diffResult) => {
   return diffResult
@@ -24,9 +36,11 @@ export const updateObjectDoc = (
   isArrayChanged,
 ) => {
   const parsedObject = {};
+  const arrayChangePath = isArrayChanged ? parseFieldPath(fieldName) : null;
+
   deepAssignKeyValue(fieldName, fieldValue, parsedObject);
   valsMap.doc.transact(() => {
-    deepAssignToDoc(parsedObject, valsMap, schema, isArrayChanged);
+    deepAssignToDoc(parsedObject, valsMap, schema, arrayChangePath);
   });
 };
 
@@ -69,13 +83,15 @@ export const deepAssignToDoc = (
   parsedObject,
   parentType,
   schema,
-  shouldCheckArrayItems = false,
+  arrayChangePath = null,
   isArray = false,
+  currentPath = [],
 ) => {
   Object.entries(parsedObject)
     .filter(([fieldName]) => (isArray && schema) || !!schema[fieldName])
     .forEach(([fieldName, value]) => {
       const fieldSchema = !isArray ? schema[fieldName] : schema;
+      const nextPath = currentPath.concat(fieldName);
 
       const yType = updateParent(
         parentType,
@@ -88,14 +104,30 @@ export const deepAssignToDoc = (
       if (yType) {
         if (fieldSchema.type === "array") {
           yType.doc.transact(() => {
-            if (shouldCheckArrayItems && value.length !== yType.length) {
-              const lengthDiff = yType.length - value.length;
-              yType.delete(yType.length - lengthDiff, lengthDiff);
+            if (
+              isSameFieldPath(nextPath, arrayChangePath) &&
+              yType.length > value.length
+            ) {
+              yType.delete(value.length, yType.length - value.length);
             }
-            deepAssignToDoc(value, yType, fieldSchema.items, true, true);
+            deepAssignToDoc(
+              value,
+              yType,
+              fieldSchema.items,
+              arrayChangePath,
+              true,
+              nextPath,
+            );
           });
         } else if (fieldSchema.type === "object") {
-          deepAssignToDoc(value, yType, fieldSchema.properties, true);
+          deepAssignToDoc(
+            value,
+            yType,
+            fieldSchema.properties,
+            arrayChangePath,
+            false,
+            nextPath,
+          );
         } else {
           const delta = diffToDelta(diff(yType.toString(), value));
           yType.applyDelta(delta);

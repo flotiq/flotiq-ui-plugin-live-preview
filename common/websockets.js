@@ -1,47 +1,80 @@
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import { getUserColor } from "../plugins/field-config/user-colors";
-import { getCtdSettings } from "./settings-parser";
+import { getGlobalSettings } from "./settings-parser";
+import { renderDebugPanel } from "./ws-debug-panel";
 
 const connections = new Map();
+
+renderDebugPanel(connections);
+
+setInterval(() => {
+  renderDebugPanel();
+}, 1000);
+
+function getWebSocketEndpoint(apiUrl) {
+  if (process.env.WS_ENDPOINT) return process.env.WS_ENDPOINT;
+
+  return apiUrl !== "https://api.flotiq.com"
+    ? "wss://flotiq-websockets-staging.dev.cdwv.pl"
+    : "wss://collab-gateway.flotiq.com";
+}
+
+function disposeConnection(roomId) {
+  if (!connections.has(roomId)) return;
+
+  const connection = connections.get(roomId);
+  if (connection.isDisposing) return;
+
+  connection.isDisposing = true;
+
+  const { ws, doc } = connection;
+
+  ws.shouldConnect = false;
+  ws.disconnect();
+  ws.destroy();
+
+  if (!doc.isDestroyed) {
+    doc.destroy();
+  }
+
+  connections.delete(roomId);
+  renderDebugPanel();
+}
 
 function getWebSocketConnection(apiKey, roomId, apiUrl) {
   if (!connections.has(roomId)) {
     const ydoc = new Y.Doc();
+    const websocketEnpoint = getWebSocketEndpoint(apiUrl);
 
-    const websocketEnpoint =
-      apiUrl !== "https://api.flotiq.com"
-        ? "wss://flotiq-websockets-staging.dev.cdwv.pl"
-        : "wss://sockets.flotiq.com";
+    const ws = new WebsocketProvider(
+      websocketEnpoint,
+      `ws/editor/${roomId}`, // roomId = "contentType/id"
+      ydoc,
+      {
+        params: { apiKey },
+        connect: true,
+      },
+    );
 
-    const ws = new WebsocketProvider(websocketEnpoint, roomId, ydoc, {
-      params: { apiKey },
-      connect: true,
-    });
-
-    connections.set(roomId, { ws, doc: ydoc });
+    connections.set(roomId, { ws, doc: ydoc, isDisposing: false });
+    renderDebugPanel();
 
     const userData = JSON.parse(window.localStorage["cms.user"]).data;
 
-    ws.on("connection-close", () => {
-      const users = Array.from(ws.awareness.getStates().values()) || [];
-      const flotiqEditors = users.filter(
-        (user) => user?.userId && user.userId !== userData.id,
-      );
-
-      if (!flotiqEditors.length) {
-        ydoc.getMap("vals").clear();
-        ydoc.destroy();
-      }
-
-      ws.awareness.destroy();
-      connections.clear(roomId);
+    ws.on("connection-close", (event) => {
+      console.log(event?.code, event?.reason);
+      if (connections.get(roomId)?.isDisposing) return;
+      renderDebugPanel();
     });
 
-    ws.on("status", (isOpened) => {
-      if (!isOpened) return;
-      const update = Y.encodeStateAsUpdate(ydoc);
-      Y.applyUpdate(ydoc, update);
+    ws.on("status", (event) => {
+      if (event.status === "connected") {
+        const update = Y.encodeStateAsUpdate(ydoc);
+        Y.applyUpdate(ydoc, update);
+      }
+
+      renderDebugPanel();
     });
 
     // Set user information for the connection
@@ -56,14 +89,14 @@ function getWebSocketConnection(apiKey, roomId, apiUrl) {
   return connections.get(roomId);
 }
 
-export function clearConnections() {
-  if (connections.size > 0)
-    connections.forEach((value) => {
-      value.ws.disconnect();
-      value.ws.destroy();
-    });
+export function disconnectFromRoom(roomId) {
+  disposeConnection(roomId);
+}
 
-  connections.clear();
+export function clearConnections() {
+  Array.from(connections.keys()).forEach((roomId) => {
+    disposeConnection(roomId);
+  });
 }
 
 export const getObjectWSConnection = (
@@ -75,14 +108,41 @@ export const getObjectWSConnection = (
 ) => {
   if (!spaceId || !apiUrl || !pluginSettings || !contentType?.name) return;
 
-  const settingsForCtd = getCtdSettings(pluginSettings, contentType.name);
-  if (!settingsForCtd.length) return;
+  const globalSettings = getGlobalSettings(pluginSettings);
+  if (!globalSettings.api_key) return;
 
-  const objectRoomId = `${spaceId}/${contentType.name}/${initialData?.id || "add"}`;
+  const objectRoomId = `${contentType.name}/${initialData?.id || "add"}`;
 
-  return getWebSocketConnection(
-    settingsForCtd[0].api_key,
-    objectRoomId,
-    apiUrl,
-  );
+  return getWebSocketConnection(globalSettings.api_key, objectRoomId, apiUrl);
+};
+
+export const sendRefetchSignal = (
+  pluginSettings,
+  contentType,
+  initialData,
+  spaceId,
+  apiUrl,
+) => {
+  if (!spaceId || !apiUrl || !pluginSettings || !contentType?.name) return;
+
+  const objectRoomId = `${contentType.name}/${initialData?.id || "add"}`;
+  const wsConnection = connections.get(objectRoomId);
+
+  if (!wsConnection?.ws?.ws) return;
+
+  const nativeSocket = wsConnection.ws.ws;
+  if (nativeSocket.readyState !== WebSocket.OPEN) return;
+
+  const docKey =
+    contentType?.name && initialData?.id
+      ? `${contentType.name}/${initialData.id}`
+      : undefined;
+
+  const payload = docKey ? { type: "refetch", docKey } : { type: "refetch" };
+
+  try {
+    nativeSocket.send(JSON.stringify(payload));
+  } catch {
+    // fire-and-forget
+  }
 };

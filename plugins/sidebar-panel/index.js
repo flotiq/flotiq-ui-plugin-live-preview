@@ -4,8 +4,12 @@ import {
 } from "../../common/plugin-element-cache";
 import { getCtdSettings } from "../../common/settings-parser";
 import pluginInfo from "../../plugin-manifest.json";
-import { clearConnections } from "../../common/websockets";
-import { createPanelElement, updatePanelElement } from "./panel-elements";
+import { disconnectFromRoom } from "../../common/websockets";
+import {
+  createMockElement,
+  createPanelElement,
+  updatePanelElement,
+} from "./panel-elements";
 
 export const handlePanelPlugin = (
   { contentType, contentObject, form, create },
@@ -15,29 +19,33 @@ export const handlePanelPlugin = (
 ) => {
   if (!contentType?.name || !form) return null;
   const settingsForCtd = getCtdSettings(getPluginSettings(), contentType.name);
-  if (!settingsForCtd?.length) return null;
-
+  const ctdHaspreview = !!settingsForCtd?.length;
   const cacheKey = `${pluginInfo.id}-${contentType.name}-${contentObject?.id || "new"}`;
   let pluginContainer = getCachedElement(cacheKey)?.element;
   if (!pluginContainer) {
-    pluginContainer = createPanelElement(create);
+    pluginContainer = ctdHaspreview
+      ? createPanelElement(create)
+      : createMockElement();
 
     addElementToCache(pluginContainer, cacheKey, null, () => {
-      clearConnections();
+      const roomId = `${contentType.name}/${contentObject?.id || "add"}`;
+      disconnectFromRoom(roomId);
     });
   }
 
-  const spaceId = getSpaceId();
+  if (ctdHaspreview) {
+    const spaceId = getSpaceId();
 
-  const objectData = { ...contentObject, ...form.getValues() };
-  updatePanelElement(
-    pluginContainer,
-    settingsForCtd,
-    objectData,
-    spaceId,
-    create,
-    rerenderColumn,
-  );
+    const objectData = { ...contentObject, ...form.getValues() };
+    updatePanelElement(
+      pluginContainer,
+      settingsForCtd,
+      objectData,
+      spaceId,
+      create,
+      rerenderColumn,
+    );
+  }
 
   return pluginContainer;
 };

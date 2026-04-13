@@ -15,6 +15,22 @@ export const openInNewTab = (link) => {
   }
 };
 
+/**
+ * Create simple element that will help us receive detach signal later, but is not visible in the UI.
+ */
+export const createMockElement = () => {
+  const element = document.createElement("div");
+  element.addEventListener(
+    "flotiq.attached",
+    () => {
+      if (!element.parentElement) return;
+      element.parentElement.style.display = "none";
+    },
+    true,
+  );
+  return element;
+};
+
 export const createPanelElement = (disabled) => {
   const panelElement = document.createElement("div");
   panelElement.classList.add("plugin-live-preview");
