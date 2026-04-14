@@ -54,7 +54,7 @@ export const handleFormFieldListenrsAdd = (
     },
     onChange: ({ value, fieldApi }) => {
       updateDoc(
-        name,
+        fieldApi.name,
         value,
         schema,
         wsConnection.doc,
