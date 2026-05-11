@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.2]
 ### Fixed
-* plugin no longer initializes live preview for other plugin settings
+* plugin no longer initializes live preview for other plugin settings forms
 * removed redundant websocket close logging from the browser console
 
 ## [0.8.1]
