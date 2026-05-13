@@ -1,4 +1,3 @@
-import pluginInfo from "../../plugin-manifest.json";
 import { getObjectWSConnection } from "../../common/websockets";
 import { deepAssignToDoc, updateObjectDoc } from "../../common/yjs";
 
@@ -24,14 +23,14 @@ export const updateDoc = (
 };
 
 export const handleFormFieldListenrsAdd = (
-  { contentType, initialData, form, name, create },
+  { contentType, initialData, form, create },
   getPluginSettings,
   getSpaceId,
   getApiUrl,
 ) => {
   if (!form || create || !contentType) return;
 
-  if (contentType?.id === pluginInfo.id && contentType?.nonCtdSchema) {
+  if (contentType?.nonCtdSchema) {
     return;
   }
 

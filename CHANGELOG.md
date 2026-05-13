@@ -5,8 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
-## [0.8.1]
+## [0.8.2]
+### Fixed
+* plugin no longer initializes live preview for other plugin settings forms
+* removed redundant websocket close logging from the browser console
 
+## [0.8.1]
 ### Fixed
 * Fixed conflict with multilingual plugin which caused incorrect value passed from websocket server
 

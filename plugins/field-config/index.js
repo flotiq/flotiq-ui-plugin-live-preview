@@ -16,6 +16,9 @@ export const handleFormFieldConfig = (
     }
     return;
   }
+  if (contentType?.nonCtdSchema) {
+    return;
+  }
 
   const schema = contentType.schemaDefinition?.allOf?.[1]?.properties;
   if (!schema) return;

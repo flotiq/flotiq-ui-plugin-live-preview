@@ -62,8 +62,7 @@ function getWebSocketConnection(apiKey, roomId, apiUrl) {
 
     const userData = JSON.parse(window.localStorage["cms.user"]).data;
 
-    ws.on("connection-close", (event) => {
-      console.log(event?.code, event?.reason);
+    ws.on("connection-close", () => {
       if (connections.get(roomId)?.isDisposing) return;
       renderDebugPanel();
     });
