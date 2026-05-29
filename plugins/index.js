@@ -25,7 +25,8 @@ const loadStyles = () => {
 
 registerFn(
   pluginInfo,
-  (handler, _, { getPluginSettings, getLanguage, getSpaceId, getApiUrl }) => {
+  (handler, _, { getPluginSettings, getLanguage, getSpaceId, getApiUrl, getFeatureFlag }) => {
+    const isCollaborationEnabled = getFeatureFlag('formCollaboration');
     loadStyles();
 
     const language = getLanguage();
@@ -46,14 +47,16 @@ registerFn(
     handler.on("flotiq.form.field::config", (data) =>
       handleFormFieldConfig(data, getPluginSettings, getSpaceId, getApiUrl),
     );
-    handler.on("flotiq.form.field.listeners::add", (data) =>
-      handleFormFieldListenrsAdd(
-        data,
-        getPluginSettings,
-        getSpaceId,
-        getApiUrl,
-      ),
-    );
+    if (!isCollaborationEnabled) {
+      handler.on("flotiq.form.field.listeners::add", (data) =>
+        handleFormFieldListenrsAdd(
+          data,
+          getPluginSettings,
+          getSpaceId,
+          getApiUrl,
+        ),
+      );
+    }
 
     handler.on("flotiq.form.secondary-column::add", (data) => {
       rerenderFn.column = data.rerender;
@@ -66,16 +69,20 @@ registerFn(
       }
     });
 
-    handler.on("flotiq.form.relation::after-submit", (data) => {
-      handleFormRelationChanged(data, getPluginSettings, getSpaceId, getApiUrl);
-    });
+    if (!isCollaborationEnabled) {
+      handler.on("flotiq.form.relation::after-submit", (data) => {
+        handleFormRelationChanged(data, getPluginSettings, getSpaceId, getApiUrl);
+      });
+    }
 
     handler.on("flotiq.form::after-submit", (data) =>
       handleFormAfterSubmit(data, getPluginSettings, getSpaceId, getApiUrl),
     );
 
-    handler.on("flotiq-multilingual.translation::changed", (data) => {
-      handleChangeTranslation(data, getPluginSettings, getSpaceId, getApiUrl);
-    });
+    if (!isCollaborationEnabled) {
+      handler.on("flotiq-multilingual.translation::changed", (data) => {
+        handleChangeTranslation(data, getPluginSettings, getSpaceId, getApiUrl);
+      });
+    }
   },
 );
