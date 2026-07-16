@@ -132,6 +132,12 @@
   border-bottom: 1px solid #dae3f2;
 }
 
+.mode-dark .plugin-live-preview__status-bar {
+  background: #060a17;
+  color: #fff;
+  border-bottom-color: #334155;
+}
+
 .plugin-live-preview__status-bar__wrapper {
   display: flex;
   align-items: center;
@@ -189,7 +195,15 @@
   color: #141046;
 }
 
+.mode-dark .plugin-live-preview__status-button {
+  color: #fff;
+}
+
 .plugin-live-preview__status-button--blue {
+  color: #0083fc;
+}
+
+.mode-dark .plugin-live-preview__status-button--blue {
   color: #0083fc;
 }
 
