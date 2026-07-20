@@ -25,9 +25,16 @@ const loadStyles = () => {
 
 registerFn(
   pluginInfo,
-  (handler, _, { getPluginSettings, getLanguage, getSpaceId, getApiUrl, getFeatureFlag }) => {
-    const isCollaborationEnabled = getFeatureFlag('formCollaboration');
+  (
+    handler,
+    _,
+    { getPluginSettings, getLanguage, getSpaceId, getApiUrl, getFeatureFlag },
+  ) => {
     loadStyles();
+
+    const isFormCollaborationEnabled = () => {
+      return getFeatureFlag("formCollaboration");
+    };
 
     const language = getLanguage();
     if (language !== i18n.language) {
@@ -45,18 +52,24 @@ registerFn(
       handlePanelPlugin(data, getPluginSettings, getSpaceId, rerenderFn.column),
     );
     handler.on("flotiq.form.field::config", (data) =>
-      handleFormFieldConfig(data, getPluginSettings, getSpaceId, getApiUrl),
+      handleFormFieldConfig(
+        data,
+        getPluginSettings,
+        getSpaceId,
+        getApiUrl,
+        isFormCollaborationEnabled(),
+      ),
     );
-    if (!isCollaborationEnabled) {
-      handler.on("flotiq.form.field.listeners::add", (data) =>
-        handleFormFieldListenrsAdd(
-          data,
-          getPluginSettings,
-          getSpaceId,
-          getApiUrl,
-        ),
+
+    handler.on("flotiq.form.field.listeners::add", (data) => {
+      if (isFormCollaborationEnabled()) return;
+      return handleFormFieldListenrsAdd(
+        data,
+        getPluginSettings,
+        getSpaceId,
+        getApiUrl,
       );
-    }
+    });
 
     handler.on("flotiq.form.secondary-column::add", (data) => {
       rerenderFn.column = data.rerender;
@@ -69,20 +82,24 @@ registerFn(
       }
     });
 
-    if (!isCollaborationEnabled) {
-      handler.on("flotiq.form.relation::after-submit", (data) => {
-        handleFormRelationChanged(data, getPluginSettings, getSpaceId, getApiUrl);
-      });
-    }
+    handler.on("flotiq.form.relation::after-submit", (data) => {
+      if (isFormCollaborationEnabled()) return;
+      handleFormRelationChanged(data, getPluginSettings, getSpaceId, getApiUrl);
+    });
 
-    handler.on("flotiq.form::after-submit", (data) =>
-      handleFormAfterSubmit(data, getPluginSettings, getSpaceId, getApiUrl),
-    );
+    handler.on("flotiq.form::after-submit", (data) => {
+      if (isFormCollaborationEnabled()) return;
+      return handleFormAfterSubmit(
+        data,
+        getPluginSettings,
+        getSpaceId,
+        getApiUrl,
+      );
+    });
 
-    if (!isCollaborationEnabled) {
-      handler.on("flotiq-multilingual.translation::changed", (data) => {
-        handleChangeTranslation(data, getPluginSettings, getSpaceId, getApiUrl);
-      });
-    }
+    handler.on("flotiq-multilingual.translation::changed", (data) => {
+      if (isFormCollaborationEnabled()) return;
+      handleChangeTranslation(data, getPluginSettings, getSpaceId, getApiUrl);
+    });
   },
 );
