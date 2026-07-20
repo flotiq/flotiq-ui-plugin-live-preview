@@ -6,6 +6,7 @@ export const handleFormFieldConfig = (
   getPluginSettings,
   getSpaceId,
   getApiUrl,
+  isFormCollaboration,
 ) => {
   if (!form || create || !contentType) return;
 
@@ -19,6 +20,8 @@ export const handleFormFieldConfig = (
   if (contentType?.nonCtdSchema) {
     return;
   }
+
+  if (isFormCollaboration) return;
 
   const schema = contentType.schemaDefinition?.allOf?.[1]?.properties;
   if (!schema) return;
