@@ -80,6 +80,7 @@ export const handleSecondaryColumnAdd = (
       () => {
         window.removeEventListener("message", messageEvent);
         window.removeEventListener("resize", resizeEvent);
+        panelElement.cleanupPermissionListener?.();
         onIframeClose(rerender);
       },
     );
