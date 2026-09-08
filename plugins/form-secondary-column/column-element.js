@@ -1,5 +1,6 @@
 import i18n from "../../i18n";
 import { openInNewTab } from "../sidebar-panel/panel-elements";
+import { watchLocalNetworkPermission } from "./local-network-permission";
 
 import previewIcon from "inline:../../images/preview-icon.svg";
 import closeIcon from "inline:../../images/close-icon.svg";
@@ -93,6 +94,12 @@ export const createSecondaryColumn = (rerender, baseLink, onIframeClose) => {
   iframe.className = "plugin-live-preview__iframe";
   iframe.referrerPolicy = "origin";
   panelElement.appendChild(iframe);
+
+  panelElement.cleanupPermissionListener = watchLocalNetworkPermission(
+    panelElement,
+    iframe,
+    link,
+  );
 
   const reloadButton = panelElement.querySelector(
     ".plugin-live-preview__refresh",
