@@ -36,9 +36,6 @@ export const createPanelElement = (disabled) => {
   panelElement.classList.add("plugin-live-preview");
 
   let container = /*html*/ `
-      <span class="plugin-live-preview__header">
-        Preview
-      </span>
       <div class="plugin-live-preview__button-list"></div>
   `;
 
