@@ -14,20 +14,13 @@
   row-gap: 0.25rem;
 }
 
-/* Panel Header */
-.plugin-live-preview__header {
-  font-weight: 700;
-  font-size: 16px;
-  margin-bottom: 1rem;
-}
-
 /* Panel Button */
 .plugin-live-preview__link,
 .plugin-live-preview__link:focus {
   box-sizing: border-box;
   display: flex;
   cursor: pointer;
-  color: #0083fc;
+  color: #1c70e8;
   font-weight: 500;
   height: 36px;
   align-items: center;
@@ -38,7 +31,7 @@
   transition-duration: 200ms;
   text-decoration: none;
   line-height: 1;
-  border: 2px solid #0083fc;
+  border: 2px solid #1c70e8;
   border-radius: 8px;
   padding: 0 12px;
   width: fit-content;
@@ -51,7 +44,7 @@
 
 .plugin-live-preview__link:hover {
   color: white;
-  background-color: #0083fc;
+  background-color: #1c70e8;
   text-decoration: none;
 }
 
@@ -65,7 +58,7 @@
 .plugin-live--preview__link--disabled:focus {
   opacity: 0.5;
   cursor: not-allowed;
-  color: #0083fc;
+  color: #1c70e8;
 }
 
 .plugin-live-preview__disabled {
@@ -76,7 +69,7 @@
 }
 
 .mode-dark .plugin-live-preview__disabled {
-  color: white;
+  color: #dae3f2;
 }
 
 /* Theme: dark */
@@ -84,13 +77,8 @@
   background: #020617;
 }
 
-.mode-dark .plugin-live-preview__header,
 .mode-dark .plugin-live-preview__link {
-  color: white;
-}
-
-.mode-dark .plugin-live-preview__link svg {
-  filter: contrast(0) brightness(100);
+  color: #dae3f2;
 }
 
 @media (max-width: 1536px) {
@@ -138,8 +126,8 @@
 
 .mode-dark .plugin-live-preview__status-bar {
   background: #060a17;
-  color: #fff;
-  border-bottom-color: #334155;
+  color: #dae3f2;
+  border-bottom-color: #1e293b;
 }
 
 .plugin-live-preview__status-bar__wrapper {
@@ -184,7 +172,7 @@
 
 .mode-dark .plugin-live-preview__permission-warning {
   background: #450a0a;
-  color: #fff;
+  color: #dae3f2;
   border-color: #7f1c1d;
 }
 
@@ -193,7 +181,7 @@
   height: 7px;
   border-radius: 7px;
   position: relative;
-  background-color: #0083fc;
+  background-color: #1c70e8;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
   margin: auto 12px;
 }
@@ -206,7 +194,7 @@
   height: 300%;
   box-sizing: border-box;
   border-radius: 12px;
-  background-color: #0083fc;
+  background-color: #1c70e8;
   opacity: 0.5;
   animation: flotiq-plugin-live-preview__pulse 1.25s
     cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
@@ -233,15 +221,15 @@
 }
 
 .mode-dark .plugin-live-preview__status-button {
-  color: #fff;
+  color: #dae3f2;
 }
 
 .plugin-live-preview__status-button--blue {
-  color: #0083fc;
+  color: #1c70e8;
 }
 
 .mode-dark .plugin-live-preview__status-button--blue {
-  color: #0083fc;
+  color: #1c70e8;
 }
 
 .plugin-live-preview__status-button > svg {

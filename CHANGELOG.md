@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [0.10.1]
+### Changed
+* removed "Preview" header from the sidebar panel
+* updated primary blue color to #1c70e8 (color-blue) and dark mode text color to #dae3f2 (color-slate-200)
+
 ## [0.10.0]
 ### Added
 * warning for blocked permissions required to connect to a live preview running on localhost
